@@ -191,6 +191,7 @@ const bookLabel = Number.isFinite(bookCount) && (bookCount as number) > 0
   }
 
   .hero__btn {
+    box-sizing: border-box;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -201,8 +202,11 @@ const bookLabel = Number.isFinite(bookCount) && (bookCount as number) > 0
     text-decoration: none;
     border-radius: 40px;
     padding: 14px 28px;
+    min-height: 52px;
+    height: auto;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: anywhere;
     flex-shrink: 0;
   }
 
@@ -223,9 +227,17 @@ const bookLabel = Number.isFinite(bookCount) && (bookCount as number) > 0
     justify-content: center;
     width: 28px;
     height: 28px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: #FFFCF5;
     color: #121212;
+  }
+
+  .hero__btn-icon svg {
+    display: block;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   .hero__btn--outline {
@@ -606,13 +618,14 @@ const bookLabel = Number.isFinite(bookCount) && (bookCount as number) > 0
 
     .hero__actions {
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       width: 100%;
     }
 
     .hero__btn {
       width: 100%;
-      max-width: 280px;
+      max-width: 320px;
+      margin-inline: auto;
       justify-content: center;
       padding: 14px 24px;
       box-sizing: border-box;
