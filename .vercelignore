@@ -1,0 +1,25 @@
+# Only files the Astro/Vercel build needs are uploaded. Everything below is
+# local-only tooling or secrets — never ship it to Vercel.
+node_modules
+.git
+
+# Environment / secrets
+.env
+.env.*
+*.env
+db_config.py
+
+# Python admin tooling (run locally against the DB, never needed by the build)
+*.py
+
+# SQL dumps & data backups (contain real user data)
+*.sql
+wisdom_vault_backup_*.json
+
+# Local scripts (admin/maintenance tools, never needed by the build)
+/scripts/
+
+# Scratch files
+*.txt
+preview.html
+public/astro.config.mjs

@@ -1,0 +1,200 @@
+---
+---
+
+<section class="features">
+  <div class="features__container">
+    <div class="features__header">
+      <span class="features__label">What's Inside</span>
+      <h2 class="features__title">
+        Everything You Need to
+        <em class="features__title-accent">Grow</em>
+      </h2>
+      <p class="features__subtitle">
+        Premium content, smart tools, and a community that supports your journey.
+      </p>
+    </div>
+
+    <div class="features__grid">
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h3 class="feature-card__title">Premium Courses</h3>
+        <p class="feature-card__desc">Expert-led courses on finance, business, technology, and personal development.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+        <h3 class="feature-card__title">AI Videos</h3>
+        <p class="feature-card__desc">Cutting-edge AI-generated content that makes complex topics easy to understand.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </div>
+        <h3 class="feature-card__title">Music Library</h3>
+        <p class="feature-card__desc">Curated tracks for focus, motivation, and relaxation. Listen while you learn.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <h3 class="feature-card__title">Earn Rewards</h3>
+        <p class="feature-card__desc">Refer friends and earn $3.89 for every person who joins. Turn your network into income.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="feature-card__title">Community</h3>
+        <p class="feature-card__desc">Connect with like-minded learners. Share insights, ask questions, grow together.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-card__icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3 class="feature-card__title">Secure & Private</h3>
+        <p class="feature-card__desc">Your data is encrypted and protected. Learn with peace of mind.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    padding: 100px 32px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .features__container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .features__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  .features__label {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FFB400;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .features__title {
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 48px);
+    color: #121212;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .features__title-accent {
+    font-style: italic;
+    color: #FFB400;
+  }
+
+  .features__subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(16px, 1.2vw, 18px);
+    color: #6B6B6B;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .feature-card {
+    padding: 32px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(18,18,18,0.06);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255,180,0,0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(255,180,0,0.15);
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px -12px rgba(0,0,0,0.12);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-card__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,180,0,0.08);
+    border-radius: 12px;
+    color: #121212;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+
+  .feature-card:hover .feature-card__icon {
+    background: rgba(255,180,0,0.15);
+    transform: scale(1.1);
+  }
+
+  .feature-card__title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #121212;
+    margin-bottom: 8px;
+  }
+
+  .feature-card__desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #6B6B6B;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 1024px) {
+    .features__grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 600px) {
+    .features { padding: 60px 16px; }
+    .features__grid { grid-template-columns: 1fr; }
+    .feature-card { padding: 24px; }
+  }
+</style>

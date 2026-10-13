@@ -1,0 +1,58 @@
+---
+---
+<div class="scroll-indicator">
+  <div class="scroll-indicator__line"></div>
+  <span class="scroll-indicator__text">Discover More</span>
+</div>
+
+<style>
+  .scroll-indicator {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    animation: fadeInUp 1.2s ease-out 1.2s both;
+    pointer-events: none;
+  }
+
+  .scroll-indicator__line {
+    width: 1px;
+    height: 36px;
+    background: linear-gradient(to bottom, rgba(245, 166, 35, 0.4), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  .scroll-indicator__text {
+    font-family: 'Inter', sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.2);
+  }
+
+  @keyframes scrollLine {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, 30px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  @media (max-width: 768px) {
+    .scroll-indicator { bottom: 20px; }
+    .scroll-indicator__line { height: 24px; }
+    .scroll-indicator__text { font-size: 8px; }
+  }
+
+  @media (max-width: 480px) {
+    .scroll-indicator { bottom: 60px; }
+    .scroll-indicator__line { height: 20px; }
+  }
+</style>

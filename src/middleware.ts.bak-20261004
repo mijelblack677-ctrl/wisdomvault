@@ -1,0 +1,89 @@
+// src/middleware.ts
+// Security headers for every response (HTML pages get the full set incl. CSP).
+import { defineMiddleware } from 'astro:middleware';
+
+// Origins whose embedded players the dashboard is allowed to frame. Without an
+// explicit frame-src, CSP falls back to default-src 'self' and every video
+// lesson fails with "Framing ... violates the following Content Security Policy
+// directive" — the lesson simply showed a blank black box.
+const VIDEO_FRAME_ORIGINS = [
+  'https://www.youtube.com',
+  'https://www.youtube-nocookie.com',
+  'https://player.vimeo.com',
+  'https://www.tiktok.com',
+  'https://www.instagram.com',
+  'https://www.facebook.com',
+  'https://web.facebook.com',
+  'https://platform.twitter.com',
+  'https://rumble.com',
+  'https://www.dailymotion.com',
+  'https://player.twitch.tv',
+  'https://clips.twitch.tv',
+  'https://w.soundcloud.com',
+  'https://audiomack.com',
+  'https://www.mixcloud.com',
+  'https://drive.google.com',
+  'https://docs.google.com',
+];
+
+const CSP = [
+  "default-src 'self'",
+  // Inline scripts kept allowed (Astro inline snippets); external script
+  // injection from other origins is still blocked. Twitter and TikTok load a
+  // widget script to upgrade their embed placeholders.
+  "script-src 'self' 'unsafe-inline' https://platform.twitter.com https://www.tiktok.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com",
+  "font-src 'self' data: https://fonts.gstatic.com https://api.fontshare.com",
+  "img-src 'self' data: blob: https:",
+  // data: is needed for the dashboard's notification chime, which is an inline
+  // base64 WAV; without it the browser refuses to play it and logs a CSP error.
+  "media-src 'self' blob: data: https:",
+  // The Vercel-hosted copy of the frontend calls the API on the primary domain
+  // directly (see the API-origin shim in BaseLayout.astro), so it has to be
+  // allowed here or every cross-origin request dies as "Failed to fetch".
+  // TikTok's oEmbed lookup is a direct fetch from the page.
+  "connect-src 'self' https://api.paychangu.co.mw https://vault-of-wisdom.com https://www.vault-of-wisdom.com https://www.tiktok.com",
+  "form-action 'self' https://api.paychangu.co.mw https://paychangu.co.mw",
+  `frame-src 'self' ${VIDEO_FRAME_ORIGINS.join(' ')}`,
+  "frame-ancestors 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+].join('; ');
+
+export const onRequest = defineMiddleware((context, next) => {
+  // ── Referral attribution ────────────────────────────────────────────────
+  // Capture the invite code the moment an invite link is opened, and keep it
+  // server-side in an httpOnly cookie. Registration reads the code from here
+  // instead of trusting the form, so clearing or editing the referral field —
+  // or posting to /api/auth/register directly — can no longer deny the
+  // referrer their bonus.
+  //
+  // First link wins: an existing cookie is never overwritten, so a second
+  // referrer cannot claim a visitor the first one already introduced.
+  // The shape check keeps arbitrary junk (and cookie-stuffing attempts) out.
+  const refFromLink = (context.url.searchParams.get('ref') || '').trim().toUpperCase();
+  if (refFromLink && /^[A-Z0-9]{4,12}$/.test(refFromLink) && !context.cookies.has('wv_ref')) {
+    context.cookies.set('wv_ref', refFromLink, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: context.url.protocol === 'https:',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30, // 30 days — long enough to cover a slow signup
+    });
+  }
+
+  const response = next();
+  return response.then((res) => {
+    res.headers.set('X-Content-Type-Options', 'nosniff');
+    res.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    res.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+
+    const contentType = res.headers.get('Content-Type') || '';
+    if (contentType.startsWith('text/html')) {
+      res.headers.set('X-Frame-Options', 'SAMEORIGIN');
+      res.headers.set('Content-Security-Policy', CSP);
+    }
+    return res;
+  });
+});

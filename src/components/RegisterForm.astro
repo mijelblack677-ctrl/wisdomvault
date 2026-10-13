@@ -1,0 +1,508 @@
+---
+---
+<div class="register-form-wrapper" id="register">
+  <div class="container">
+    <div class="register-form-card">
+      <h2 class="register-form__title">Open Your <span class="text-accent">Vault</span></h2>
+      <p class="register-form__subtitle">Join Wisdom Vault today and start your journey.</p>
+
+      <form id="register-form" class="register-form">
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="reg-fullname" class="form-label">Full Name</label>
+          <input type="text" id="reg-fullname" name="fullName" class="form-input" placeholder="Enter your full name" required />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="reg-email" class="form-label">Email Address</label>
+          <input type="email" id="reg-email" name="email" class="form-input" placeholder="Enter your email" required />
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+          <label for="reg-phone" class="form-label">Phone Number</label>
+          <input type="tel" id="reg-phone" name="phone" class="form-input" placeholder="+256700000000" required />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="reg-password" class="form-label">Password</label>
+          <input type="password" id="reg-password" name="password" class="form-input" placeholder="Min. 6 characters" required minlength="6" />
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+          <label for="reg-confirm" class="form-label">Confirm Password</label>
+          <input type="password" id="reg-confirm" name="confirm" class="form-input" placeholder="Repeat your password" required minlength="6" />
+        </div>
+
+        <!-- Referral Code (Optional) -->
+        <div class="form-group">
+          <label for="reg-referral" class="form-label">Referral Code <span class="form-label-optional">(Optional)</span></label>
+          <input type="text" id="reg-referral" name="referralCode" class="form-input" placeholder="Enter a friend's code" />
+        </div>
+
+        <!-- Terms -->
+        <label class="terms" style="display:flex;align-items:center;gap:8px;margin:6px 0 12px;cursor:pointer;">
+          <input type="checkbox" id="reg-terms" class="terms__check" style="margin:0;" />
+          <span class="terms__text">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+        </label>
+
+        <!-- Submit -->
+        <button type="submit" class="form-submit" id="reg-submit">
+          <span class="form-submit__text">Create Account</span>
+          <span class="form-submit__loader" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spinner">
+              <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+
+        <!-- Message Area -->
+        <div id="reg-message" class="form-message" style="display:none;"></div>
+      </form>
+
+      <p class="register-form__login-link">
+        Already a member? <a href="#login" class="register-form__login-link-a">Sign in</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Consent Popup -->
+  <div class="consent-overlay" id="consent-overlay" hidden>
+    <div class="consent-modal" role="dialog" aria-modal="true" aria-labelledby="consent-title" tabindex="-1">
+      <div class="consent-modal__header">
+        <h3 class="consent-modal__title" id="consent-title">Consent &amp; Terms</h3>
+        <p class="consent-modal__subtitle">Please read carefully. You must agree to create an account.</p>
+      </div>
+      <div class="consent-modal__body">
+        <p class="consent-modal__lead">By clicking <strong>I Agree</strong>, you confirm that you have read and understood the following:</p>
+        <ol class="consent-modal__list">
+          <li><strong>Terms &amp; Privacy:</strong> You agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a> and will use the platform lawfully.</li>
+          <li><strong>Personal data:</strong> You consent to the collection, processing and storage of your personal information (name, email, phone number and account activity) for account management, payments, referrals and platform communications.</li>
+          <li><strong>Paid membership:</strong> This is a paid membership service. You agree to pay applicable membership or renewal fees, and access to paid content continues only while your membership is active.</li>
+          <li><strong>Non-refundable fees:</strong> Membership and other fees are non-refundable once paid. Please be sure you understand what you are paying for before you complete any payment.</li>
+          <li><strong>Referrals &amp; earnings:</strong> You understand referral bonuses and rewards depend on program activity and eligibility, and are never guaranteed.</li>
+          <li><strong>Communications:</strong> You consent to receiving account-related communications by email and SMS about your membership, payments and platform updates.</li>
+          <li><strong>Responsible use:</strong> You agree not to misuse the platform, create fraudulent accounts or harm other users.</li>
+          <li><strong>Age:</strong> You confirm you are at least 18 years old, or have the consent of a parent or guardian.</li>
+        </ol>
+        <p class="consent-modal__foot">If you disagree with any of the above, select <strong>Disagree</strong> — you will not be able to create an account.</p>
+      </div>
+      <div class="consent-modal__actions">
+        <button type="button" class="btn-consent btn-consent--disagree" id="consent-disagree">Disagree</button>
+        <button type="button" class="btn-consent btn-consent--agree" id="consent-agree">I Agree</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .register-form-wrapper {
+    background: #0B0B0B;
+    position: relative;
+    z-index: 10;
+    padding: 120px 0;
+  }
+
+  .register-form-card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid rgba(245, 166, 35, 0.2);
+    border-radius: 12px;
+    padding: 48px 40px;
+  }
+
+  .register-form__title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .register-form__subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(14px, 0.9vw, 16px);
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .form-label-optional {
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .form-input {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+  }
+
+  .form-input::placeholder {
+    color: #555;
+  }
+
+  .form-submit {
+    margin-top: 8px;
+    padding: 14px 0;
+    background: var(--accent);
+    color: #0B0B0B;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .form-submit:hover {
+    background: #d4b35a;
+    box-shadow: 0 8px 30px rgba(245, 166, 35, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .form-message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .form-message--success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+  }
+
+  .form-message--error {
+    background: rgba(229, 57, 53, 0.1);
+    border: 1px solid rgba(229, 57, 53, 0.3);
+    color: #e53935;
+  }
+
+  .register-form__login-link {
+    text-align: center;
+    margin-top: 24px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .register-form__login-link-a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .register-form__login-link-a:hover {
+    color: #d4b35a;
+  }
+
+  /* Consent popup (dark theme) */
+  .consent-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .consent-overlay[hidden] { display: none; }
+
+  .consent-modal {
+    width: 100%;
+    max-width: 460px;
+    max-height: 84vh;
+    background: #161616;
+    border: 1px solid rgba(245, 166, 35, 0.25);
+    border-radius: 14px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .consent-modal__header {
+    padding: 20px 24px 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .consent-modal__title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    font-family: var(--font-heading);
+    margin: 0 0 4px;
+  }
+  .consent-modal__subtitle { font-size: 12px; color: rgba(255, 255, 255, 0.5); margin: 0; }
+
+  .consent-modal__body {
+    padding: 18px 24px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .consent-modal__lead { font-size: 13px; color: rgba(255, 255, 255, 0.75); margin: 0 0 10px; }
+  .consent-modal__list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .consent-modal__list li { font-size: 12.5px; line-height: 1.55; color: rgba(255, 255, 255, 0.7); }
+  .consent-modal__list a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .consent-modal__list a:hover { text-decoration: underline; }
+  .consent-modal__foot { font-size: 12.5px; color: rgba(255, 255, 255, 0.7); margin: 14px 0 0; }
+
+  .consent-modal__actions {
+    padding: 14px 24px 20px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #161616;
+  }
+  .btn-consent {
+    flex: 1;
+    height: 44px;
+    border-radius: 8px;
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-consent--agree {
+    background: var(--accent);
+    border: none;
+    color: #0B0B0B;
+  }
+  .btn-consent--agree:hover { background: #d4b35a; transform: translateY(-1px); }
+  .btn-consent--disagree {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .btn-consent--disagree:hover { background: rgba(255, 255, 255, 0.06); }
+
+  @media (max-width: 600px) {
+    .register-form-card {
+      padding: 32px 24px;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('register-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('reg-submit') as HTMLButtonElement;
+  const submitText = submitBtn.querySelector('.form-submit__text') as HTMLElement;
+  const submitLoader = submitBtn.querySelector('.form-submit__loader') as HTMLElement;
+  const messageDiv = document.getElementById('reg-message') as HTMLDivElement;
+
+  function showMessage(text: string, type: 'success' | 'error') {
+    messageDiv.textContent = text;
+    messageDiv.className = `form-message form-message--${type}`;
+    messageDiv.style.display = 'block';
+  }
+
+  function hideMessage() {
+    messageDiv.style.display = 'none';
+  }
+
+  function setLoading(loading: boolean) {
+    submitBtn.disabled = loading;
+    submitText.style.display = loading ? 'none' : 'inline';
+    submitLoader.style.display = loading ? 'inline' : 'none';
+  }
+
+  // --- Consent popup ---
+  const consentOverlay = document.getElementById('consent-overlay');
+  const consentAgree = document.getElementById('consent-agree');
+  const consentDisagree = document.getElementById('consent-disagree');
+
+  function openConsentModal() {
+    if (!consentOverlay) return;
+    consentOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeConsentModal() {
+    if (!consentOverlay) return;
+    consentOverlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  consentAgree?.addEventListener('click', () => {
+    closeConsentModal();
+    submitRegistration();
+  });
+
+  consentDisagree?.addEventListener('click', () => {
+    closeConsentModal();
+    showMessage('You must agree to the consent and terms to create an account. If you disagree, you cannot register.', 'error');
+  });
+
+  // Clicking the dark backdrop or pressing Escape closes the popup (no consent given yet)
+  consentOverlay?.addEventListener('click', (e) => {
+    if (e.target === consentOverlay) closeConsentModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && consentOverlay && !consentOverlay.hidden) closeConsentModal();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideMessage();
+
+    const fullName = (document.getElementById('reg-fullname') as HTMLInputElement).value.trim();
+    const emailEl = document.getElementById('reg-email') as HTMLInputElement;
+    const phoneEl = document.getElementById('reg-phone') as HTMLInputElement;
+    const email = emailEl ? emailEl.value.trim() : '';
+    const phone = phoneEl ? phoneEl.value.trim() : '';
+    const password = (document.getElementById('reg-password') as HTMLInputElement).value;
+    const confirm = (document.getElementById('reg-confirm') as HTMLInputElement)?.value;
+    const referralCode = (document.getElementById('reg-referral') as HTMLInputElement).value.trim();
+    const termsEl = document.getElementById('reg-terms') as HTMLInputElement;
+    const terms = termsEl ? termsEl.checked : true; // default true if no checkbox
+
+    // Validate presence of either email or phone
+    if (!fullName || (!email && !phone) || !password || !confirm) {
+      showMessage('Please fill in all required fields.', 'error');
+      return;
+    }
+
+    if (password.length < 6) {
+      showMessage('Password must be at least 6 characters.', 'error');
+      return;
+    }
+
+    if (password !== confirm) {
+      showMessage('Passwords do not match.', 'error');
+      return;
+    }
+
+    if (!terms) {
+      showMessage('Please agree to the Terms of Service.', 'error');
+      return;
+    }
+
+    // Show the consent popup — the account is only created after the user agrees
+    openConsentModal();
+  });
+
+  async function submitRegistration() {
+    const fullName = (document.getElementById('reg-fullname') as HTMLInputElement).value.trim();
+    const emailEl = document.getElementById('reg-email') as HTMLInputElement;
+    const phoneEl = document.getElementById('reg-phone') as HTMLInputElement;
+    const email = emailEl ? emailEl.value.trim() : '';
+    const phone = phoneEl ? phoneEl.value.trim() : '';
+    const password = (document.getElementById('reg-password') as HTMLInputElement).value;
+    const referralCode = (document.getElementById('reg-referral') as HTMLInputElement).value.trim();
+
+    setLoading(true);
+
+    try {
+      const payload: any = {
+        fullName,
+        password,
+        referralCode: referralCode || undefined,
+        consent: true, // explicit consent given in the popup
+      };
+
+      if (email) payload.email = email;
+      if (phone && !email) payload.phone = phone;
+
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showMessage(`Welcome, ${data.user.fullName}! Your referral code is ${data.user.referralCode}. ${data.user.isFoundingMember ? 'You are a Founding Member!' : ''}`, 'success');
+        form.reset();
+        // Store user data
+        localStorage.setItem('wisdom_vault_user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('wisdom_vault_session', data.token);
+        }
+        // Redirect after a moment
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
+      } else {
+        showMessage(data.message || 'Registration failed. Please try again.', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error. Please check your connection.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Pre-fill referral code from URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    const refEl = document.getElementById('reg-referral') as HTMLInputElement;
+    if (refEl) refEl.value = refCode;
+  }
+</script>

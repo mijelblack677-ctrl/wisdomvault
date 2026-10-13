@@ -1,0 +1,31 @@
+# Wisdom Vault — https://vault-of-wisdom.com
+#
+# The marketing pages are open to crawlers; everything behind a login, the whole
+# API and the checkout flow are not. Those paths already require a session, so
+# this is about keeping them out of search results rather than securing them.
+
+User-agent: *
+Allow: /
+
+# Authenticated app
+Disallow: /dashboard
+Disallow: /vault
+Disallow: /vaultpro
+Disallow: /billing
+
+# Staff tooling
+Disallow: /admin
+
+# Payment / checkout flow — nothing here is a landing page and a crawler
+# following a link into it can create half-finished payment state.
+Disallow: /pay/
+
+# The API is not content. It also returns per-user data for authenticated
+# callers, which must never be indexed if a token ever leaks into a URL.
+Disallow: /api/
+
+# Single-page result filters that only duplicate content.
+Disallow: /*?ref=
+Disallow: /*?code=
+
+Sitemap: https://vault-of-wisdom.com/sitemap.xml

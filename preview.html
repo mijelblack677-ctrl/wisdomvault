@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Wisdom Vault - Cute Robot Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,sans-serif;background:#0B0E1A;color:white;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+.bg{position:fixed;inset:0;z-index:-3;background:url('/images/monkey.jpg') center/cover;filter:brightness(.5)}
+.bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,200,100,.08),transparent 50%),linear-gradient(180deg,rgba(11,14,26,.2),rgba(11,14,26,.9))}
+.glass{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));backdrop-filter:blur(30px) saturate(150%);border:1px solid rgba(255,255,255,.08);border-radius:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 25px 60px rgba(0,0,0,.6);position:relative;overflow:hidden}
+.container{width:100%;max-width:440px;position:relative;z-index:2}
+.card{padding:32px 28px}
+
+/* ---------- CUTE ROBOT ---------- */
+.stage{position:relative;width:100%;height:200px;display:flex;align-items:center;justify-content:center;perspective:500px}
+.bot-wrap{position:relative;width:130px;height:130px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.bot{position:absolute;inset:0;transform-style:preserve-3d;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* Head - round and cute */
+.head{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:90px;height:80px;background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.05));border:2px solid rgba(255,255,255,.15);border-radius:30px 30px 25px 25px;box-shadow:inset 0 3px 0 rgba(255,255,255,.2),0 8px 24px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;transform-style:preserve-3d;transition:transform .3s}
+.head::before{content:'';position:absolute;inset:-2px;border-radius:32px 32px 27px 27px;padding:2px;background:linear-gradient(135deg,rgba(255,200,100,.2),rgba(255,255,255,.1));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* Little blush cheeks */
+.cheek{position:absolute;bottom:18px;width:16px;height:10px;border-radius:50%;background:rgba(255,150,150,.2);filter:blur(3px);transition:all .3s}
+.cheek.left{left:8px}
+.cheek.right{right:8px}
+.cheek.happy{background:rgba(255,100,100,.35);filter:blur(2px)}
+
+/* Antenna - little heart */
+.antenna{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:3px;height:16px;background:linear-gradient(180deg,rgba(255,200,100,.6),rgba(255,255,255,.2));border-radius:2px}
+.antenna-dot{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,#FFD700);box-shadow:0 0 15px rgba(255,215,0,.5),0 0 30px rgba(255,215,0,.2);animation:glow 2s ease-in-out infinite}
+@keyframes glow{0%,100%{opacity:.8;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
+.antenna-dot.suspicious{background:radial-gradient(circle at 30% 30%,#fff,#FFA500);box-shadow:0 0 15px rgba(255,165,0,.5)}
+.antenna-dot.angry{background:radial-gradient(circle at 30% 30%,#fff,#FF6B6B);box-shadow:0 0 20px rgba(255,107,107,.6);animation:glow .4s infinite}
+.antenna-dot.happy{background:radial-gradient(circle at 30% 30%,#fff,#FFD700);box-shadow:0 0 25px rgba(255,215,0,.7);animation:glow 1s ease-in-out infinite}
+
+/* Eyes - big and expressive */
+.eyes{position:relative;display:flex;gap:16px;margin-top:4px}
+.eye-wrap{position:relative;width:28px;height:28px}
+.eyebrow{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:20px;height:4px;background:rgba(255,255,255,.7);border-radius:10px;transition:all .4s cubic-bezier(.34,1.56,.64,1);transform-origin:center}
+.eyebrow.left.suspicious{transform:translateX(-50%) rotate(-12deg) translateY(2px)}
+.eyebrow.right.suspicious{transform:translateX(-50%) rotate(12deg) translateY(2px)}
+.eyebrow.left.angry{transform:translateX(-50%) rotate(-20deg) translateY(4px)}
+.eyebrow.right.angry{transform:translateX(-50%) rotate(20deg) translateY(4px)}
+.eyebrow.left.happy{transform:translateX(-50%) rotate(-8deg) translateY(-4px)}
+.eyebrow.right.happy{transform:translateX(-50%) rotate(8deg) translateY(-4px)}
+
+.eye{position:absolute;top:2px;left:0;width:28px;height:22px;background:linear-gradient(180deg,#fff 0%,#f0f0f0 100%);border-radius:50%;overflow:hidden;box-shadow:inset 0 2px 4px rgba(0,0,0,.1);transition:all .3s}
+.eye.suspicious{height:16px;top:6px;border-radius:40%}
+.eye.angry{height:12px;top:8px;border-radius:30%;background:linear-gradient(180deg,#FFE0B2,#FFAB91)}
+.eye.happy{height:8px;top:12px;border-radius:50% 50% 0 0;background:#FFD700;border-bottom:3px solid #FFA000}
+.eye.closed{height:2px;top:13px}
+
+.iris{position:absolute;top:50%;left:50%;width:14px;height:14px;background:radial-gradient(circle at 30% 30%,#6B4F3C,#3E2723);border-radius:50%;transform:translate(-50%,-50%);transition:transform .15s ease-out;box-shadow:inset 0 1px 2px rgba(0,0,0,.2)}
+.iris::after{content:'';position:absolute;top:3px;left:4px;width:3px;height:3px;background:white;border-radius:50%;opacity:.8}
+.pupil{position:absolute;top:50%;left:50%;width:6px;height:6px;background:#1A1A2E;border-radius:50%;transform:translate(-50%,-50%)}
+.iris.suspicious{width:12px;height:16px;background:radial-gradient(circle at 30% 30%,#FFA500,#CC8400)}
+.iris.angry{width:18px;height:10px;background:radial-gradient(circle at 30% 30%,#FF6B6B,#CC0000);border-radius:4px}
+.iris.happy{width:16px;height:4px;background:#FFA000;border-radius:10px}
+
+/* Mouth - cute smile */
+.mouth-wrap{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:30px;height:16px;display:flex;align-items:center;justify-content:center}
+.mouth{width:16px;height:3px;background:rgba(255,255,255,.6);border-radius:10px;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.mouth.suspicious{width:10px;height:2px;transform:rotate(-2deg);background:rgba(255,255,255,.4)}
+.mouth.angry{width:22px;height:2px;background:#FF6B6B;transform:rotate(4deg)}
+.mouth.happy{width:24px;height:12px;background:transparent;border:2px solid #FFD700;border-top:0;border-radius:0 0 14px 14px;box-shadow:0 0 20px rgba(255,215,0,.2)}
+.mouth.talking{animation:talk .15s ease-in-out infinite}
+@keyframes talk{0%,100%{height:3px}50%{height:6px;width:12px}}
+
+/* Little body */
+.body{position:absolute;top:86px;left:50%;transform:translateX(-50%);width:50px;height:24px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:0 0 14px 14px;box-shadow:inset 0 2px 0 rgba(255,255,255,.05)}
+
+/* Arms - cute waving */
+.arm{position:absolute;top:92px;width:14px;height:30px;background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.08);border-radius:8px;transition:transform .5s}
+.arm.left{left:calc(50% - 42px);transform-origin:top center;animation:armLeft 3s ease-in-out infinite}
+.arm.right{left:calc(50% + 28px);transform-origin:top center;animation:armRight 3s ease-in-out infinite .5s}
+@keyframes armLeft{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(-12deg)}}
+@keyframes armRight{0%,100%{transform:rotate(6deg)}50%{transform:rotate(12deg)}}
+.arm.watching{animation:none;transform:rotate(-25deg)}
+.arm.angry{animation:shakeArm .3s ease-in-out infinite}
+@keyframes shakeArm{0%,100%{transform:rotate(8deg)}50%{transform:rotate(20deg)}}
+.arm.happy{animation:wave 1s ease-in-out infinite}
+@keyframes wave{0%,100%{transform:rotate(0)}25%{transform:rotate(20deg)}75%{transform:rotate(-20deg)}}
+
+/* Speech bubble - cute and round */
+.bubble{position:absolute;top:-10px;left:50%;transform:translateX(-50%) translateY(0) scale(.8);background:rgba(255,255,255,.95);color:#0B0E1A;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;white-space:nowrap;opacity:0;pointer-events:none;transition:all .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10;font-family:'Quicksand',sans-serif}
+.bubble::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%) rotate(45deg);width:14px;height:14px;background:rgba(255,255,255,.95)}
+.bubble.show{opacity:1;transform:translateX(-50%) translateY(-8px) scale(1)}
+.bubble.happy{background:#FFD700;color:#0B0E1A}.bubble.happy::after{background:#FFD700}
+.bubble.angry{background:#FF6B6B;color:white}.bubble.angry::after{background:#FF6B6B}
+.bubble.susp{background:#FFA500;color:#0B0E1A}.bubble.susp::after{background:#FFA500}
+
+/* ---------- UI ---------- */
+.field{position:relative;margin-bottom:14px}
+.field input{width:100%;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:white;outline:none;font-size:14px;transition:.3s;font-family:'Quicksand',sans-serif}
+.field input:focus{border-color:rgba(255,215,0,.3);background:rgba(255,255,255,.07);box-shadow:0 0 0 4px rgba(255,215,0,.05)}
+.btn{width:100%;height:48px;background:linear-gradient(135deg,#FFD700,#FFA000);color:#0B0E1A;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:.2s;margin-top:6px;font-family:'Quicksand',sans-serif}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5}
+.btn:hover{background:linear-gradient(135deg,#FFE082,#FFB300);transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,215,0,.3)}
+
+.locked{position:absolute;inset:0;background:rgba(11,14,26,.95);backdrop-filter:blur(20px);border-radius:24px;display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px;z-index:20;text-align:center;padding:24px}
+.locked.show{display:flex;animation:fadeIn .5s}
+@keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+.dots{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.08);transition:.3s;box-shadow:0 0 8px rgba(255,215,0,.02)}
+.dot.filled{background:#FF6B6B;box-shadow:0 0 16px rgba(255,107,107,.4)}
+.dot.ok{background:#FFD700;box-shadow:0 0 16px rgba(255,215,0,.4)}
+</style>
+</head><body>
+<div class="bg"></div>
+
+<div class="container">
+  <div class="stage">
+    <div class="bot-wrap" id="botWrap">
+      <div class="bubble" id="bubble">Hi there! 👋 I'm Coco!</div>
+      <div class="bot" id="bot">
+        <div class="head" id="head">
+          <div class="cheek left" id="cheekL"></div>
+          <div class="cheek right" id="cheekR"></div>
+          <div class="antenna"><div class="antenna-dot" id="antennaDot"></div></div>
+          <div class="eyes">
+            <div class="eye-wrap">
+              <div class="eyebrow left" id="browL"></div>
+              <div class="eye" id="eyeL"><div class="iris" id="irisL"><div class="pupil"></div></div></div>
+            </div>
+            <div class="eye-wrap">
+              <div class="eyebrow right" id="browR"></div>
+              <div class="eye" id="eyeR"><div class="iris" id="irisR"><div class="pupil"></div></div></div>
+            </div>
+          </div>
+          <div class="mouth-wrap"><div class="mouth" id="mouth"></div></div>
+        </div>
+        <div class="body"></div>
+        <div class="arm left" id="armL"></div>
+        <div class="arm right" id="armR"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glass">
+    <div class="card">
+      <div class="locked" id="lockedOverlay">
+        <div style="width:64px;height:64px;border-radius:20px;background:rgba(255,107,107,.12);border:1px solid rgba(255,107,107,.25);display:flex;align-items:center;justify-content:center;animation:float 2s ease-in-out infinite">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FF6B6B" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div><div style="font-size:20px;font-weight:700;font-family:'Quicksand',sans-serif">Oh no! 😢</div><div style="font-size:13px;opacity:.6;margin-top:6px;line-height:1.5">I got too worried after 3 wrong tries.<br>Please contact an admin to unlock me!</div></div>
+        <div style="font-size:10px;opacity:.3;font-family:'Quicksand',sans-serif">Coco is sad 😔 • Contact admin</div>
+        <button class="btn" style="background:rgba(255,255,255,.08);color:white;border:1px solid rgba(255,255,255,.1)" onclick="location.reload()">Try again later 🥺</button>
+      </div>
+
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:24px;font-weight:700;font-family:'Quicksand',sans-serif;color:#FFD700">Welcome Back!</div>
+        <div style="font-size:12px;opacity:.5;margin-top:4px;font-family:'Quicksand',sans-serif">Coco is ready to help you sign in ✨</div>
+        <div class="dots" id="dots"><div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div></div>
+      </div>
+
+      <form id="form">
+        <div class="field"><input type="text" id="id" placeholder="Email or phone number" required/></div>
+        <div class="field"><input type="password" id="pw" placeholder="Password (try vault123)" required/></div>
+        <button type="submit" class="btn" id="btn">Let me in! 🚀</button>
+        <div id="msg" style="display:none;padding:10px;border-radius:10px;font-size:12px;text-align:center;margin-top:12px;font-family:'Quicksand',sans-serif"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const botWrap=document.getElementById('botWrap');
+const head=document.getElementById('head');
+const eyeL=document.getElementById('eyeL');
+const eyeR=document.getElementById('eyeR');
+const irisL=document.getElementById('irisL');
+const irisR=document.getElementById('irisR');
+const browL=document.getElementById('browL');
+const browR=document.getElementById('browR');
+const mouth=document.getElementById('mouth');
+const bubble=document.getElementById('bubble');
+const ant=document.getElementById('antennaDot');
+const armL=document.getElementById('armL');
+const armR=document.getElementById('armR');
+const cheekL=document.getElementById('cheekL');
+const cheekR=document.getElementById('cheekR');
+const idIn=document.getElementById('id');
+const pwIn=document.getElementById('pw');
+
+let fails=0;
+let blinkInterval;
+
+function showBubble(text,mood=''){
+  bubble.textContent=text;
+  bubble.className='bubble show '+mood;
+  clearTimeout(bubble._t);
+  bubble._t=setTimeout(()=>bubble.classList.remove('show'),3500);
+}
+
+function setState(state){
+  const states=['suspicious','angry','happy','closed'];
+  [eyeL,eyeR,irisL,irisR,browL,browR,mouth].forEach(el=>{states.forEach(s=>el.classList.remove(s)); if(state) el.classList.add(state);});
+  ant.className='antenna-dot '+(state==='angry'?'angry':state);
+  [cheekL,cheekR].forEach(c=>c.classList.toggle('happy',state==='happy'));
+  if(state==='suspicious'){armL.className='arm left watching'; armR.className='arm right watching';}
+  else if(state==='angry'){armL.className='arm left angry'; armR.className='arm right angry';}
+  else if(state==='happy'){armL.className='arm left happy'; armR.className='arm right happy'; botWrap.style.transform='rotate(-3deg) scale(1.05)';}
+  else {armL.className='arm left'; armR.className='arm right'; botWrap.style.transform='';}
+}
+
+function blink(){
+  eyeL.classList.add('closed'); eyeR.classList.add('closed');
+  setTimeout(()=>{eyeL.classList.remove('closed'); eyeR.classList.remove('closed');},150);
+}
+function startBlink(){clearInterval(blinkInterval); blinkInterval=setInterval(()=>{if(Math.random()>0.3) blink()},2500 + Math.random()*2000);}
+startBlink();
+
+function lookAt(x,y){
+  if(document.querySelector('.locked.show')) return;
+  const rect=head.getBoundingClientRect();
+  const cx=rect.left+rect.width/2;
+  const cy=rect.top+rect.height/2;
+  const dx=(x-cx)/window.innerWidth;
+  const dy=(y-cy)/window.innerHeight;
+  const mx=Math.max(-8,Math.min(8,dx*16));
+  const my=Math.max(-5,Math.min(5,dy*10));
+  irisL.style.transform=`translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
+  irisR.style.transform=`translate(calc(-50% + ${mx}px), calc(-50% + ${my}px))`;
+  head.style.transform=`translateX(-50%) rotateY(${dx*10}deg) rotateX(${-dy*6}deg)`;
+  botWrap.style.transform=`rotateY(${dx*5}deg) rotateX(${-dy*3}deg)`;
+}
+document.addEventListener('mousemove',e=>lookAt(e.clientX,e.clientY));
+
+function onTyping(){
+  if(document.querySelector('.locked.show')) return;
+  setState('suspicious');
+  const total=(idIn.value+pwIn.value).length;
+  const jitter=(Math.sin(total*2)*4);
+  irisL.style.transform=`translate(calc(-50% + ${jitter}px), -50%)`;
+  irisR.style.transform=`translate(calc(-50% + ${jitter}px), -50%)`;
+  mouth.classList.add('talking');
+  clearTimeout(window._talk);
+  window._talk=setTimeout(()=>mouth.classList.remove('talking'),400);
+  if(total%7===0) blink();
+}
+
+idIn.addEventListener('input',onTyping);
+pwIn.addEventListener('input',onTyping);
+idIn.addEventListener('focus',()=>{setState('suspicious'); showBubble('Who are you? 🤔 Let me see...','susp');});
+pwIn.addEventListener('focus',()=>{setState('suspicious'); showBubble('Password? I\'ll be careful! 🤫','susp');});
+
+setTimeout(()=>showBubble('Hi there! 👋 I\'m Coco!',''),600);
+
+document.getElementById('form').addEventListener('submit',async(e)=>{
+  e.preventDefault();
+  const pass=pwIn.value;
+  const btn=document.getElementById('btn');
+  const msg=document.getElementById('msg');
+  btn.textContent='Checking... 🤔'; btn.disabled=true;
+
+  await new Promise(r=>setTimeout(r,700));
+
+  const isCorrect = pass==='vault123';
+
+  if(isCorrect){
+    setState('happy');
+    showBubble('Yay! Welcome back! 🎉','happy');
+    mouth.classList.remove('talking');
+    msg.style.display='block'; msg.textContent='✅ Correct! Coco is so happy! 🌟'; msg.style.background='rgba(255,215,0,.12)'; msg.style.border='1px solid rgba(255,215,0,.2)'; msg.style.color='#FFD700';
+    document.getElementById('d'+(fails+1))?.classList.add('ok');
+    botWrap.style.animation='float 0.4s ease-in-out 4';
+    irisL.style.transform='translate(-50%,-50%) scale(1.3)'; irisR.style.transform='translate(-50%,-50%) scale(1.3)';
+    setTimeout(()=>location.href='/dashboard',1200);
+  }else{
+    fails++;
+    document.getElementById('d'+fails)?.classList.add('filled');
+    if(fails===1){
+      setState('suspicious');
+      showBubble('Oops! That\'s not right... try again? 🥺','susp');
+      msg.style.display='block'; msg.textContent='❌ Wrong password... Coco is confused'; msg.style.background='rgba(255,107,107,.12)'; msg.style.border='1px solid rgba(255,107,107,.2)'; msg.style.color='#FF6B6B';
+      head.style.animation='shake 0.3s ease-in-out';
+      setTimeout(()=>head.style.animation='',300);
+    }else if(fails===2){
+      setState('angry');
+      showBubble('Hey! That\'s the second wrong one! 😤','angry');
+      msg.textContent='❌ Again?! Coco is getting worried...';
+      botWrap.style.transform='rotate(4deg) scale(1.1)';
+      setTimeout(()=>botWrap.style.transform='',300);
+    }else{
+      setState('angry');
+      showBubble('I\'m locking up! 😢 Admin please!','angry');
+      msg.textContent='🔒 Locked. Coco is too worried.';
+      setTimeout(()=>{
+        document.getElementById('lockedOverlay').classList.add('show');
+        setState('closed');
+        eyeL.style.height='2px'; eyeR.style.height='2px';
+        irisL.innerHTML='×'; irisR.innerHTML='×'; irisL.style.background='transparent'; irisR.style.background='transparent'; irisL.style.color='#FF6B6B'; irisR.style.color='#FF6B6B'; irisL.style.fontWeight='700'; irisR.style.fontWeight='700'; irisL.style.display='flex'; irisR.style.display='flex'; irisL.style.alignItems='center'; irisR.style.justifyContent='center';
+        ant.className='antenna-dot angry';
+        clearInterval(blinkInterval);
+      },600);
+    }
+  }
+  btn.textContent='Let me in! 🚀'; btn.disabled=false;
+});
+</script>
+<style>@keyframes shake{0%,100%{transform:translateX(-50%) translateX(0)}25%{transform:translateX(-50%) translateX(-4px)}75%{transform:translateX(-50%) translateX(4px)}}</style>
+</body></html>

@@ -1,0 +1,8 @@
+pdf.js 6.3.289
+
+Vendored from the pdfjs-dist npm package so the viewer loads on demand
+and the server build needs no extra build-time dependency.
+
+Files: build/pdf.min.mjs → pdf.min.js, build/pdf.worker.min.mjs → pdf.worker.js, LICENSE → LICENSE, wasm/, cmaps/, standard_fonts/
+Renamed to .js so nginx serves them as JavaScript (it has no mjs mapping).
+Regenerate: npm i pdfjs-dist@<version> && npm run sync:pdfjs

@@ -1,0 +1,49 @@
+/* Light Water Theme - Blue Glow Effects */
+:root {
+  --glow-blue: 0 0 20px rgba(74, 144, 217, 0.15);
+  --glow-blue-strong: 0 0 40px rgba(74, 144, 217, 0.2);
+}
+
+.glass-glow {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--glow-blue);
+}
+
+.blue-glow {
+  color: #4a90d9;
+  text-shadow: 0 0 20px rgba(74, 144, 217, 0.15), 0 0 40px rgba(74, 144, 217, 0.08);
+}
+
+.blue-glow-intense {
+  color: #4a90d9;
+  text-shadow: 0 0 30px rgba(74, 144, 217, 0.2), 0 0 60px rgba(74, 144, 217, 0.1);
+  animation: bluePulse 3s ease-in-out infinite;
+}
+
+@keyframes bluePulse {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(74, 144, 217, 0.15), 0 0 40px rgba(74, 144, 217, 0.08);
+  }
+  50% {
+    text-shadow: 0 0 40px rgba(74, 144, 217, 0.25), 0 0 80px rgba(74, 144, 217, 0.12);
+  }
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--glow-blue);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--glow-blue-strong);
+  transform: translateY(-2px);
+}

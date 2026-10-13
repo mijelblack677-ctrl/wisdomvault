@@ -1,0 +1,246 @@
+/* ============================================================
+   WISDOM VAULT - SVG ICON ANIMATIONS & TRANSITIONS
+   Subtle, polished effects for all inline SVG icons
+   ============================================================ */
+
+/* ===== BASE SVG ICON TRANSITIONS ===== */
+svg {
+  transition: stroke 0.25s ease, fill 0.25s ease, transform 0.2s ease, opacity 0.25s ease;
+}
+
+/* ===== NAVIGATION ICONS (Bottom Nav) ===== */
+.ni svg,
+.nav .ni svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              stroke 0.2s ease,
+              filter 0.2s ease;
+}
+
+.ni:hover svg {
+  transform: scale(1.12);
+  filter: drop-shadow(0 1px 3px rgba(192, 154, 138, 0.3));
+}
+
+.ni.active svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 2px 6px rgba(192, 154, 138, 0.4));
+}
+
+.ni:active svg {
+  transform: scale(0.92);
+}
+
+.nav-center-btn svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.2s ease;
+}
+
+.nav-center-btn:hover svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 2px 8px rgba(192, 154, 138, 0.5));
+}
+
+.nav-center-btn:active svg {
+  transform: scale(0.9);
+}
+
+/* ===== ADMIN SIDEBAR ICONS ===== */
+.admin-sidebar__icon svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              color 0.2s ease;
+}
+
+.admin-sidebar__link:hover .admin-sidebar__icon svg {
+  transform: scale(1.1) translateX(2px);
+}
+
+.admin-sidebar__link--active .admin-sidebar__icon svg {
+  transform: scale(1.08);
+}
+
+.admin-sidebar__link:active .admin-sidebar__icon svg {
+  transform: scale(0.92);
+}
+
+.admin-stat__icon svg {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.3s ease;
+  opacity: 0.7;
+}
+
+.admin-stat:hover .admin-stat__icon svg {
+  transform: scale(1.15) rotate(-5deg);
+  opacity: 1;
+}
+
+/* ===== ADMIN BUTTON ICONS ===== */
+.admin-btn svg {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.admin-btn:active svg {
+  transform: scale(0.9);
+}
+
+.admin-btn--success svg,
+.admin-btn--danger svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.admin-btn--success:active svg,
+.admin-btn--danger:active svg {
+  transform: scale(0.85);
+}
+
+/* ===== STATUS ICONS (Check, Alert, Clock, X) ===== */
+.admin-msg--success svg,
+.login-message--success svg {
+  filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
+  animation: checkGlow 2s ease-in-out infinite;
+}
+
+@keyframes checkGlow {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6)); }
+}
+
+.admin-msg--error svg,
+.login-message--error svg {
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4));
+  animation: alertPulse 2s ease-in-out infinite;
+}
+
+@keyframes alertPulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.3)); }
+  50% { filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6)); }
+}
+
+/* ===== EMPTY STATE ICONS (Large decorative) ===== */
+[style*="font-size:48px"] > svg,
+[style*="font-size:72px"] > svg,
+[style*="font-size:32px"] > svg,
+[style*="font-size:36px"] > svg {
+  animation: iconBreathe 3s ease-in-out infinite;
+}
+
+@keyframes iconBreathe {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.85; }
+  50% { transform: translateY(-4px) scale(1.04); opacity: 1; }
+}
+
+/* ===== TOAST ICONS ===== */
+.toast svg {
+  animation: toastIconPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+@keyframes toastIconPop {
+  from { transform: scale(0) rotate(-15deg); opacity: 0; }
+  to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ===== BELL NOTIFICATION ICON ===== */
+.bell svg {
+  transition: transform 0.2s ease;
+}
+
+.bell:hover svg {
+  transform: rotate(15deg);
+}
+
+.bell:active svg {
+  transform: rotate(-10deg) scale(0.9);
+}
+
+.bell:has(.dot) svg {
+  animation: bellRing 0.6s ease-in-out;
+}
+
+@keyframes bellRing {
+  0% { transform: rotate(0); }
+  15% { transform: rotate(14deg); }
+  30% { transform: rotate(-12deg); }
+  45% { transform: rotate(8deg); }
+  60% { transform: rotate(-6deg); }
+  75% { transform: rotate(3deg); }
+  100% { transform: rotate(0); }
+}
+
+/* ===== BOOKMARK / BOOK ICONS ===== */
+.qb:hover .qb-icon-badge svg {
+  transform: rotate(-8deg) scale(1.1);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ===== GLASS CARD ICONS ===== */
+.glass:hover svg {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* ===== WITHDRAW BUTTON ICON ===== */
+.withdraw-cta-glass svg {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.withdraw-cta-glass:active svg {
+  transform: scale(0.9) translateX(-2px);
+}
+
+/* ===== CONTENT TYPE BADGE ICONS ===== */
+span[style*="border-radius:4px"] svg {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.25s ease;
+}
+
+span[style*="border-radius:4px"]:hover svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
+}
+
+/* ===== MODAL CLOSE BUTTON ICON ===== */
+button[onclick*="remove"] svg {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+button[onclick*="remove"]:hover svg {
+  transform: rotate(90deg);
+  color: var(--gov-danger, #EF4444);
+}
+
+/* ===== MORE SHEET ICONS ===== */
+.more-item .mi-icon svg {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.more-item:active .mi-icon svg {
+  transform: scale(0.88) rotate(-5deg);
+}
+
+/* ===== ICON SIZE UTILITIES ===== */
+.wv-icon-sm svg { width: 14px; height: 14px; }
+.wv-icon-md svg { width: 18px; height: 18px; }
+.wv-icon-lg svg { width: 24px; height: 24px; }
+.wv-icon-xl svg { width: 32px; height: 32px; }
+.wv-icon-2xl svg { width: 48px; height: 48px; }
+
+/* ===== REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  svg,
+  .ni svg,
+  .admin-sidebar__icon svg,
+  .admin-stat__icon svg,
+  .admin-btn svg,
+  .bell svg,
+  .qb:hover .qb-icon-badge svg,
+  .toast svg,
+  .more-item .mi-icon svg,
+  .withdraw-cta-glass svg,
+  button[onclick*="remove"] svg,
+  [style*="font-size:48px"] > svg,
+  [style*="font-size:72px"] > svg {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+}

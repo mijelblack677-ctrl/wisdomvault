@@ -1,0 +1,17 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import '../styles/vaultpro.css';
+---
+
+<BaseLayout noindex>
+  <div id="vaultpro-app">
+    <div class="vp-bg"></div>
+    <div class="vp-overlay"></div>
+    <div id="vp-root"></div>
+  </div>
+</BaseLayout>
+
+<script>
+  import '../scripts/vaultpro.js';
+  import '../scripts/vaultpro-groups.js';
+</script>

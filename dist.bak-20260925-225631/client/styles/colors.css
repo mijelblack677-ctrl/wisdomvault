@@ -1,0 +1,35 @@
+:root {
+  /* Light Water Theme */
+  --bg-primary: #e8f0fe;
+  --bg-secondary: #d4e4f7;
+  --bg-gradient: linear-gradient(135deg, #e8f0fe 0%, #d4e4f7 30%, #c5d9f0 60%, #b8d0e8 100%);
+  
+  /* Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --glass-blur: blur(16px);
+  
+  /* Text Colors */
+  --text-primary: #1a2a3a;
+  --text-secondary: #3a5a7a;
+  --text-muted: #6a8aaa;
+  
+  /* Accent */
+  --accent: #4a90d9;
+  --accent-light: #7ab8f0;
+  --accent-dark: #2a6aaa;
+  --accent-glow: rgba(74, 144, 217, 0.15);
+  
+  /* White */
+  --white: #ffffff;
+  --shadow-light: rgba(255, 255, 255, 0.4);
+  --card-bg: rgba(255, 255, 255, 0.15);
+  --card-border: rgba(255, 255, 255, 0.25);
+  
+  /* Buttons */
+  --btn-primary: #4a90d9;
+  --btn-primary-hover: #3a7ac9;
+  --btn-secondary: rgba(255, 255, 255, 0.2);
+  --btn-secondary-hover: rgba(255, 255, 255, 0.3);
+}

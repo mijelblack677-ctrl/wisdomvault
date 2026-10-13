@@ -1,0 +1,109 @@
+---
+// Beautiful Background with gradient overlay
+---
+
+<div class="vault-bg">
+  <!-- Background image with overlay -->
+  <div class="vault-bg__image"></div>
+  
+  <!-- Gradient overlay -->
+  <div class="vault-bg__overlay"></div>
+  
+  <!-- Floating particles -->
+  <div class="vault-bg__particle vault-bg__particle--1"></div>
+  <div class="vault-bg__particle vault-bg__particle--2"></div>
+  <div class="vault-bg__particle vault-bg__particle--3"></div>
+  <div class="vault-bg__particle vault-bg__particle--4"></div>
+  <div class="vault-bg__particle vault-bg__particle--5"></div>
+  
+  <!-- Gold glow orbs -->
+  <div class="vault-bg__orb vault-bg__orb--1"></div>
+  <div class="vault-bg__orb vault-bg__orb--2"></div>
+</div>
+
+<style>
+  .vault-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* Background image - using a gradient as fallback */
+  .vault-bg__image {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, #1a0f0a 0%, #0d0805 100%);
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Gradient overlay for depth */
+  .vault-bg__overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 30% 20%, rgba(255, 215, 0, 0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 80%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+  }
+
+  /* Floating particles */
+  .vault-bg__particle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.05), transparent 70%);
+    animation: floatParticle 15s ease-in-out infinite;
+  }
+
+  .vault-bg__particle--1 { width: 300px; height: 300px; top: 10%; left: 5%; animation-delay: 0s; }
+  .vault-bg__particle--2 { width: 200px; height: 200px; top: 60%; right: 8%; animation-delay: -3s; }
+  .vault-bg__particle--3 { width: 400px; height: 400px; bottom: 10%; left: 20%; animation-delay: -6s; }
+  .vault-bg__particle--4 { width: 150px; height: 150px; top: 30%; right: 25%; animation-delay: -9s; }
+  .vault-bg__particle--5 { width: 250px; height: 250px; bottom: 40%; right: 5%; animation-delay: -12s; }
+
+  @keyframes floatParticle {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; }
+    25% { transform: translate(30px, -20px) scale(1.1); opacity: 0.6; }
+    50% { transform: translate(-20px, 30px) scale(0.9); opacity: 0.2; }
+    75% { transform: translate(20px, -10px) scale(1.05); opacity: 0.5; }
+  }
+
+  /* Gold glow orbs */
+  .vault-bg__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: orbFloat 20s ease-in-out infinite;
+  }
+
+  .vault-bg__orb--1 {
+    width: 500px;
+    height: 500px;
+    top: -100px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.08), transparent 70%);
+    animation-delay: 0s;
+  }
+
+  .vault-bg__orb--2 {
+    width: 400px;
+    height: 400px;
+    bottom: -100px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.05), transparent 70%);
+    animation-delay: -10s;
+  }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(40px, -30px) scale(1.1); }
+  }
+
+  @media (max-width: 768px) {
+    .vault-bg__particle { display: none; }
+    .vault-bg__orb--1 { width: 300px; height: 300px; }
+    .vault-bg__orb--2 { width: 250px; height: 250px; }
+  }
+</style>

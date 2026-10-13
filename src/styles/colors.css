@@ -1,0 +1,51 @@
+/* Wisdom Vault - Unified Color Scheme */
+:root {
+  /* Dark Backgrounds */
+  --bg-primary: #0D0D0D;
+  --bg-secondary: #141414;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #222222;
+  --bg-input: rgba(255, 255, 255, 0.04);
+  
+  /* Gold Accents */
+  --gold-primary: #F5A623;
+  --gold-bright: #FFC44A;
+  --gold-dim: rgba(245, 166, 35, 0.08);
+  --gold-glow: rgba(245, 166, 35, 0.18);
+  --gold-subtle: rgba(245, 166, 35, 0.04);
+  --gold-border: rgba(245, 166, 35, 0.2);
+  --gold-hover: #E0951A;
+  
+  /* Text */
+  --text-primary: #FFFFFF;
+  --text-secondary: #B8B8B8;
+  --text-muted: #888888;
+  
+  /* Borders */
+  --border-color: #2A2A2A;
+  --border-light: #333333;
+  
+  /* Status */
+  --green: #4CAF50;
+  --green-dim: rgba(76, 175, 80, 0.1);
+  --red: #EF5350;
+  --red-dim: rgba(239, 83, 80, 0.1);
+  --blue: #42A5F5;
+  --purple: #7E57C2;
+  
+  /* Shadows */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 40px rgba(245, 166, 35, 0.08);
+  --shadow-glow-hover: 0 0 60px rgba(245, 166, 35, 0.15);
+  
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  /* Fonts */
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-brand: 'Playfair Display', serif;
+}

@@ -1,0 +1,289 @@
+---
+---
+
+<section id="join" class="pricing">
+  <div class="pricing__container">
+    <div class="pricing__header">
+      <span class="pricing__label">Pricing</span>
+      <h2 class="pricing__title">
+        Start Your
+        <em class="pricing__title-accent">Journey</em>
+      </h2>
+      <p class="pricing__subtitle">
+        Premium content at an accessible price. No hidden fees.
+      </p>
+    </div>
+
+    <div class="pricing__card">
+      <div class="pricing__card-badge">Most Popular</div>
+      
+      <div class="pricing__card-header">
+        <h3 class="pricing__plan-name">Lifetime Access</h3>
+        <div class="pricing__price">
+          <span class="pricing__currency">$5.55</span>
+          <span class="pricing__period">one-time</span>
+        </div>
+        <p class="pricing__renewal">Pay once, access forever</p>
+      </div>
+
+      <div class="pricing__divider"></div>
+
+      <div class="pricing__benefits">
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Full access to all premium courses</span>
+        </div>
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>AI-powered video content</span>
+        </div>
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Curated music library</span>
+        </div>
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>New content added every month</span>
+        </div>
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Earn rewards by sharing</span>
+        </div>
+        <div class="pricing__benefit">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFB400" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>Cancel anytime — no commitments</span>
+        </div>
+      </div>
+
+      <a href="/register" class="pricing__button">
+        Get Started
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+
+      <div class="pricing__founding">
+        <span class="pricing__founding-dot"></span>
+        <span>Refer friends and earn <strong>$3.89</strong> for every person who joins</span>
+      </div>
+    </div>
+
+    <p class="pricing__guarantee">
+      Membership is voluntary, but paid fees are non-refundable. Read the Terms of Service before you pay.
+    </p>
+  </div>
+</section>
+
+<style>
+  .pricing {
+    padding: 100px 32px;
+    position: relative;
+    z-index: 10;
+  }
+
+  .pricing__container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .pricing__header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .pricing__label {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #FFB400;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .pricing__title {
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(32px, 4vw, 48px);
+    color: #121212;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .pricing__title-accent {
+    font-style: italic;
+    color: #FFB400;
+  }
+
+  .pricing__subtitle {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(16px, 1.2vw, 18px);
+    color: #6B6B6B;
+  }
+
+  .pricing__card {
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(18,18,18,0.06);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing__card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #FFB400, #FFAA00);
+  }
+
+  .pricing__card-badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 6px 12px;
+    background: rgba(255,180,0,0.1);
+    border: 1px solid rgba(255,180,0,0.2);
+    border-radius: 100px;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #121212;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .pricing__card-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .pricing__plan-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    margin-bottom: 16px;
+  }
+
+  .pricing__price {
+    margin-bottom: 8px;
+  }
+
+  .pricing__currency {
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(48px, 6vw, 64px);
+    color: #121212;
+    letter-spacing: -0.02em;
+  }
+
+  .pricing__period {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #6B6B6B;
+  }
+
+  .pricing__renewal {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #FFB400;
+  }
+
+  .pricing__divider {
+    height: 1px;
+    background: rgba(18,18,18,0.06);
+    margin: 24px 0;
+  }
+
+  .pricing__benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .pricing__benefit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    color: #5A5A5A;
+  }
+
+  .pricing__benefit svg { flex-shrink: 0; }
+
+  .pricing__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 16px;
+    background: #121212;
+    color: #FFFCF5;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+  }
+
+  .pricing__button:hover {
+    background: #2a2a2a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  }
+
+  .pricing__founding {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #6B6B6B;
+    text-align: center;
+  }
+
+  .pricing__founding-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00C950;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .pricing__founding strong { color: #121212; }
+
+  .pricing__guarantee {
+    text-align: center;
+    margin-top: 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #6B6B6B;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @media (max-width: 600px) {
+    .pricing { padding: 60px 16px; }
+    .pricing__card { padding: 28px 24px; }
+    .pricing__card-badge { position: static; display: inline-block; margin-bottom: 16px; }
+    .pricing__currency { font-size: 48px; }
+  }
+</style>

@@ -1,0 +1,411 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div id="stats-app">
+    <div class="stats-bg"></div>
+    <div class="stats-overlay"></div>
+    <div id="stats-container"></div>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  #stats-app {
+    min-height: 100vh;
+    background: #0a0a12;
+    font-family: 'Inter', sans-serif;
+    color: #e8e8f5;
+    position: relative;
+  }
+
+  .stats-bg {
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.06) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  .stats-overlay {
+    position: fixed; inset: 0;
+    background: linear-gradient(180deg, rgba(10,10,18,0.3) 0%, rgba(10,10,18,0.9) 100%);
+    z-index: 1;
+  }
+
+  #stats-container {
+    position: relative; z-index: 2;
+    max-width: 1200px; margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .stats-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .stats-title {
+    font-size: 24px; font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .stats-subtitle { font-size: 13px; color: #6a6a8a; margin-top: 4px; }
+
+  .refresh-btn {
+    padding: 10px 20px; border-radius: 12px;
+    background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3);
+    color: #a78bfa; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    font-family: inherit;
+  }
+  .refresh-btn:hover { background: rgba(168,85,247,0.25); }
+  .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .grid { display: grid; gap: 16px; margin-bottom: 24px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+  .card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; padding: 20px;
+    backdrop-filter: blur(10px);
+  }
+
+  .card-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.08em; color: #6a6a8a; margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+  }
+
+  .card-value--green { color: #10b981; }
+  .card-value--blue { color: #3b82f6; }
+  .card-value--purple { color: #a78bfa; }
+  .card-value--amber { color: #f59e0b; }
+  .card-value--red { color: #ef4444; }
+  .card-value--white { color: #e8e8f5; }
+
+  .card-sub {
+    font-size: 12px; color: #6a6a8a; margin-top: 4px;
+  }
+
+  .section-title {
+    font-size: 16px; font-weight: 700; color: #e8e8f5;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+  }
+
+  .section-title svg { width: 18px; height: 18px; }
+
+  .balance-card {
+    background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(168,85,247,0.1) 100%);
+    border: 1px solid rgba(99,102,241,0.2);
+    border-radius: 20px; padding: 24px;
+    position: relative; overflow: hidden;
+  }
+
+  .balance-card::before {
+    content: ''; position: absolute; top: -50%; right: -50%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .balance-label {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.1em; color: #818cf8; margin-bottom: 12px;
+    position: relative;
+  }
+
+  .balance-amount {
+    font-size: 36px; font-weight: 900; letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    position: relative;
+  }
+
+  .balance-sub {
+    font-size: 13px; color: #6a6a8a; margin-top: 8px;
+    position: relative;
+  }
+
+  .stat-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .stat-row:last-child { border-bottom: none; }
+
+  .stat-label { font-size: 13px; color: #8a8aa0; }
+  .stat-value { font-size: 14px; font-weight: 700; color: #e8e8f5; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 999px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge--green { background: rgba(16,185,129,0.15); color: #10b981; }
+  .badge--amber { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .badge--red { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .badge--blue { background: rgba(59,130,246,0.15); color: #3b82f6; }
+
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid rgba(168,85,247,0.2);
+    border-top-color: #a78bfa;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 40px auto;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    text-align: center; color: #6a6a8a; font-size: 14px; margin-top: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .balance-amount { font-size: 28px; }
+    .card-value { font-size: 22px; }
+  }
+</style>
+
+<script>
+  const container = document.getElementById('stats-container');
+  const user = JSON.parse(localStorage.getItem('wisdom_vault_user') || '{}');
+  const adminToken = localStorage.getItem('admin_token') || '';
+
+  if (!user.id) {
+    container.innerHTML = `<div style="text-align:center;padding:60px 20px;color:#6a6a8a;">
+      <p>Please log in as admin to view stats.</p>
+      <a href="/admin" style="color:#a78bfa;">Go to Admin Login</a>
+    </div>`;
+  } else {
+    loadStats();
+  }
+
+  async function loadStats() {
+    container.innerHTML = `
+      <div style="text-align:center;padding:60px 20px;">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading system stats...</div>
+      </div>
+    `;
+
+    try {
+      const res = await fetch('/api/admin/system-stats', {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      });
+      const data = await res.json();
+
+      if (!data.success) {
+        container.innerHTML = `<div style="text-align:center;padding:60px;color:#ef4444;">
+          ${data.message || 'Failed to load stats'}
+        </div>`;
+        return;
+      }
+
+      renderStats(data.stats);
+    } catch (err) {
+      container.innerHTML = `<div style="text-align:center;padding:60px;color:#ef4444;">
+        Network error: ${(err as Error).message}
+      </div>`;
+    }
+  }
+
+  function fmt(n: number) {
+    return 'MWK ' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+  }
+
+  function renderStats(s: any) {
+    const pc = s.paychangu || {};
+    const pcMain = pc.mainBalance || 0;
+    const pcCollection = pc.collectionBalance || 0;
+    const pcTotal = pcMain + pcCollection;
+
+    const pendingWithdrawals = s.withdrawals?.pending || { count: 0, totalRequested: 0 };
+    const processingWithdrawals = s.withdrawals?.processing || { count: 0, totalRequested: 0 };
+    const completedWithdrawals = s.withdrawals?.completed || { count: 0, totalPaid: 0, totalFees: 0 };
+
+    const platformOwes = pendingWithdrawals.totalRequested + processingWithdrawals.totalRequested;
+    const netPosition = pcTotal - platformOwes;
+
+    container.innerHTML = `
+      <!-- Header -->
+      <div class="stats-header">
+        <div>
+          <div class="stats-title">System Stats</div>
+          <div class="stats-subtitle">PayChangu Balance & Platform Metrics</div>
+        </div>
+        <button class="refresh-btn" onclick="loadStats()" id="refresh-btn">
+          ↻ Refresh
+        </button>
+      </div>
+
+      <!-- PayChangu Balance -->
+      <div class="balance-card" style="margin-bottom:24px;">
+        <div class="balance-label">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          PayChangu Wallet Balance
+          ${pc.environment ? `<span class="badge badge--green" style="margin-left:8px;">${pc.environment}</span>` : ''}
+        </div>
+        <div class="balance-amount">${fmt(pcTotal)}</div>
+        <div class="balance-sub">
+          Main: ${fmt(pcMain)} • Collection: ${fmt(pcCollection)}
+        </div>
+      </div>
+
+      <!-- Net Position -->
+      <div class="card" style="margin-bottom:24px; border-color: ${netPosition >= 0 ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'};">
+        <div class="card-label">Platform Net Position</div>
+        <div class="card-value ${netPosition >= 0 ? 'card-value--green' : 'card-value--red'}" style="font-size:24px;">
+          ${fmt(netPosition)}
+        </div>
+        <div class="card-sub">
+          PayChangu balance (${fmt(pcTotal)}) − Pending payouts (${fmt(platformOwes)})
+          ${netPosition >= 0 ? ' ✅' : ' ⚠️ Insufficient funds for pending withdrawals'}
+        </div>
+      </div>
+
+      <!-- Revenue & Users -->
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Revenue & Users
+      </div>
+      <div class="grid grid-4">
+        <div class="card">
+          <div class="card-label">Total Revenue</div>
+          <div class="card-value card-value--green">${fmt(s.revenue?.totalCollected || 0)}</div>
+          <div class="card-sub">${s.revenue?.successfulPayments || 0} successful payments</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Today's Revenue</div>
+          <div class="card-value card-value--blue">${fmt(s.revenue?.todayCollected || 0)}</div>
+          <div class="card-sub">${s.revenue?.todayPayments || 0} payments today</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Total Users</div>
+          <div class="card-value card-value--purple">${s.users?.total || 0}</div>
+          <div class="card-sub">${s.users?.verified || 0} verified • ${s.users?.pending || 0} pending</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Today's Registrations</div>
+          <div class="card-value card-value--amber">${s.users?.todayRegistrations || 0}</div>
+          <div class="card-sub">This week: ${s.users?.weekRegistrations || 0}</div>
+        </div>
+      </div>
+
+      <!-- Withdrawals -->
+      <div class="section-title" style="margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Withdrawals
+      </div>
+      <div class="grid grid-4">
+        <div class="card">
+          <div class="card-label">Pending</div>
+          <div class="card-value card-value--amber">${pendingWithdrawals.count}</div>
+          <div class="card-sub">${fmt(pendingWithdrawals.totalRequested)}</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Processing</div>
+          <div class="card-value card-value--blue">${processingWithdrawals.count}</div>
+          <div class="card-sub">${fmt(processingWithdrawals.totalRequested)}</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Completed</div>
+          <div class="card-value card-value--green">${completedWithdrawals.count}</div>
+          <div class="card-sub">Paid: ${fmt(completedWithdrawals.totalPaid)}</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Total Fees Earned</div>
+          <div class="card-value card-value--purple">${fmt(completedWithdrawals.totalFees || 0)}</div>
+          <div class="card-sub">From withdrawal fees</div>
+        </div>
+      </div>
+
+      <!-- Wallet Health -->
+      <div class="section-title" style="margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Wallet Health
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-label">User Balances</div>
+          <div class="card-value card-value--white">${fmt(s.wallets?.totalUserBalances || 0)}</div>
+          <div class="card-sub">${s.wallets?.totalWallets || 0} wallets</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Total Withdrawn</div>
+          <div class="card-value card-value--green">${fmt(s.wallets?.totalWithdrawn || 0)}</div>
+          <div class="card-sub">Fees paid: ${fmt(s.wallets?.totalFeesPaid || 0)}</div>
+        </div>
+      </div>
+
+      <!-- Referrals -->
+      <div class="section-title" style="margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Referral Program
+      </div>
+      <div class="grid grid-2">
+        ${(s.referrals || []).map((r: any) => `
+          <div class="card">
+            <div class="card-label">${r.type === 'first_level' ? 'Level 1 Referrals' : 'Level 2 Referrals'}</div>
+            <div class="card-value card-value--purple">${r.count}</div>
+            <div class="card-sub">Paid: ${r.paidCount} • Total: ${fmt(r.totalPaid)}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Premium Sales -->
+      <div class="section-title" style="margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Premium Sales
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-label">Premium Packs</div>
+          <div class="card-value card-value--amber">${s.premium?.packSales || 0}</div>
+          <div class="card-sub">Revenue: ${fmt(s.premium?.packRevenue || 0)}</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Course Purchases</div>
+          <div class="card-value card-value--blue">${s.premium?.courseSales || 0}</div>
+          <div class="card-sub">Revenue: ${fmt(s.premium?.courseRevenue || 0)}</div>
+        </div>
+      </div>
+
+      <!-- Transaction Breakdown -->
+      <div class="section-title" style="margin-top:24px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Transaction Breakdown
+      </div>
+      <div class="card">
+        ${(s.transactions || []).map((t: any) => `
+          <div class="stat-row">
+            <span class="stat-label">${t.type.replace(/_/g, ' ')}</span>
+            <span style="display:flex;gap:16px;align-items:center;">
+              <span class="badge badge--blue">${t.count} txns</span>
+              <span class="stat-value">${fmt(t.totalAmount)}</span>
+              ${t.totalFees > 0 ? `<span class="badge badge--green">Fees: ${fmt(t.totalFees)}</span>` : ''}
+            </span>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Footer -->
+      <div style="text-align:center;margin-top:32px;padding:16px;color:#4a4a60;font-size:11px;">
+        Last refreshed: ${new Date().toLocaleString()} • Auto-refresh: 60s
+      </div>
+    `;
+
+    // Auto-refresh every 60 seconds
+    setTimeout(loadStats, 60000);
+  }
+</script>

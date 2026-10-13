@@ -1,0 +1,655 @@
+---
+// Shared <head>. Pages may override the share text; the defaults are what a
+// referral link shows when it is pasted into WhatsApp or Facebook.
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'Wisdom Vault',
+  description = 'Timeless Wisdom. Tangible Rewards.',
+  image = '/og-image.png',
+  noindex = false,
+} = Astro.props;
+
+// Absolute URLs, built from `site` in astro.config.mjs rather than from the
+// incoming request: social scrapers ignore relative og:image values, and a
+// request arriving on the bare IP or the Vercel relay must not become the
+// canonical host.
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://vault-of-wisdom.com').href;
+const shareImage = new URL(image, Astro.site ?? 'https://vault-of-wisdom.com').href;
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <!-- ===== MOBILE META TAGS (ADD THESE) ===== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- ===== SHARING / SEO ===== -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph — WhatsApp, Facebook, Telegram. All values absolute. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Wisdom Vault" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:secure_url" content={shareImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Wisdom Vault — Timeless Wisdom. Tangible Rewards." />
+    <meta property="og:locale" content="en" />
+
+    <!-- Twitter / X: summary_large_image shows the full card rather than a
+         cropped thumbnail, which is what a shared referral link wants. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content="Wisdom Vault — Timeless Wisdom. Tangible Rewards." />
+
+    <!-- ===== THEME COLOR ===== -->
+    <meta name="theme-color" content="#f7f1ec" />
+
+    <!-- ===== API ORIGIN SHIM =====
+         The Vercel copy serves the frontend only; every API call belongs to the
+         real server. On a Vercel hostname we point /api/* at the primary
+         domain, so those requests never touch Vercel's edge — its free-tier
+         "Edge Requests" meter counts every request, proxied ones included.
+
+         This must stay inline and in <head>: dashboard.js, admin.js and
+         vaultpro.js capture window.fetch at module load, so it has to be
+         patched before any page script runs. -->
+    <script is:inline>
+      (function () {
+        var API_ORIGIN = 'https://vault-of-wisdom.com';
+        // Only the Vercel copy needs to reach across. On the primary domain
+        // everything is same-origin, and on localhost we must not hijack dev.
+        if (!/(^|\.)vercel\.app$/i.test(location.hostname)) return;
+
+        var originalFetch = window.fetch;
+        window.fetch = function (input, init) {
+          var url = typeof input === 'string' ? input : input && input.url;
+          var isApiPath = url === '/api' || (url && url.indexOf('/api/') === 0);
+          if (url && url.charAt(0) === '/' && isApiPath) {
+            input = API_ORIGIN + url;
+            // Sessions travel in the Authorization header (the app sets no
+            // cookies), and 'include' would make the browser reject the
+            // cross-origin response. There is nothing to lose by dropping it.
+            if (init && init.credentials === 'include') {
+              init = Object.assign({}, init, { credentials: 'omit' });
+            }
+          }
+          return originalFetch.call(this, input, init);
+        };
+      })();
+    </script>
+
+    <!-- Global Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+    <!-- ====== FAVICONS & PWA SETUP ====== -->
+    <!-- Primary High-Res PNG (Modern browsers & PWA) -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    
+    <!-- Universal Fallback .ico (Older browsers, Windows/Edge) -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <!-- Apple Touch Icon (iOS home screen) -->
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    
+    <!-- PWA Manifest (For "Add to Home Screen" functionality) -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- =========================================== -->
+
+    <!-- GLOBAL RESET & BASE STYLES -->
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --accent: #FFB400;
+        --text: #121212;
+        --muted: rgba(18, 18, 18, 0.5);
+        --card-bg: rgba(255, 255, 255, 0.6);
+        --card-border: rgba(18, 18, 18, 0.06);
+        --bg: #FFFCF5;
+        --surface: rgba(255, 255, 255, 0.6);
+      }
+
+      html {
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+      body {
+        width: 100%;
+        min-height: 100vh;
+        font-family: 'Inter', sans-serif;
+        background: var(--bg, #FFFCF5);
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      a { text-decoration: none; color: inherit; }
+      img { max-width: 100%; display: block; }
+      section, div, main { box-sizing: border-box; }
+
+      /* ====================================== */
+      /* LOADING OVERLAY - Premium Vault Theme  */
+      /* ====================================== */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(145deg, #FFFCF5 0%, #f7f1ec 40%, #ede4dd 100%);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-direction: column;
+        gap: 0;
+        overflow: hidden;
+      }
+
+      #loader-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      #loader-overlay.hiding {
+        opacity: 0;
+        transform: scale(1.05);
+      }
+
+      /* Ambient particles */
+      .loader-particles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .loader-particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: rgba(192, 154, 138, 0.25);
+        animation: particleFloat 6s ease-in-out infinite;
+      }
+
+      .loader-particle:nth-child(1) { left: 15%; top: 20%; animation-delay: 0s; animation-duration: 5s; }
+      .loader-particle:nth-child(2) { left: 75%; top: 15%; animation-delay: 1s; animation-duration: 7s; width: 3px; height: 3px; }
+      .loader-particle:nth-child(3) { left: 25%; top: 70%; animation-delay: 2s; animation-duration: 6s; width: 5px; height: 5px; }
+      .loader-particle:nth-child(4) { left: 80%; top: 65%; animation-delay: 0.5s; animation-duration: 8s; }
+      .loader-particle:nth-child(5) { left: 50%; top: 10%; animation-delay: 1.5s; animation-duration: 5.5s; width: 3px; height: 3px; }
+      .loader-particle:nth-child(6) { left: 10%; top: 50%; animation-delay: 3s; animation-duration: 7.5s; width: 6px; height: 6px; opacity: 0.15; }
+      .loader-particle:nth-child(7) { left: 90%; top: 40%; animation-delay: 2.5s; animation-duration: 6.5s; }
+      .loader-particle:nth-child(8) { left: 40%; top: 80%; animation-delay: 0.8s; animation-duration: 5.8s; width: 3px; height: 3px; }
+
+      @keyframes particleFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+        25% { transform: translate(10px, -15px) scale(1.2); opacity: 0.35; }
+        50% { transform: translate(-5px, -25px) scale(0.8); opacity: 0.2; }
+        75% { transform: translate(15px, -10px) scale(1.1); opacity: 0.3; }
+      }
+
+      /* Vault emblem container */
+      .loader-emblem {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: emblemReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
+      }
+
+      @keyframes emblemReveal {
+        from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+        to { opacity: 1; transform: scale(1) rotate(0deg); }
+      }
+
+      /* Outer decorative ring with dash animation */
+      .loader-emblem-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px solid rgba(192, 154, 138, 0.2);
+      }
+
+      .loader-emblem-ring::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: #c09a8a;
+        border-right-color: rgba(192, 154, 138, 0.3);
+        animation: emblemSpin 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      }
+
+      @keyframes emblemSpin {
+        to { transform: rotate(360deg); }
+      }
+
+      /* Inner ring - counter rotate */
+      .loader-emblem-inner {
+        position: absolute;
+        inset: 12px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(192, 154, 138, 0.12);
+      }
+
+      .loader-emblem-inner::before {
+        content: '';
+        position: absolute;
+        inset: -1px;
+        border-radius: 50%;
+        border: 1.5px solid transparent;
+        border-bottom-color: rgba(192, 154, 138, 0.5);
+        border-left-color: rgba(192, 154, 138, 0.15);
+        animation: emblemSpin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite reverse;
+      }
+
+      /* Center glow */
+      .loader-emblem-glow {
+        position: absolute;
+        inset: 20px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(192, 154, 138, 0.12) 0%, transparent 70%);
+        animation: emblemGlow 2.5s ease-in-out infinite;
+      }
+
+      @keyframes emblemGlow {
+        0%, 100% { transform: scale(0.9); opacity: 0.5; }
+        50% { transform: scale(1.2); opacity: 1; }
+      }
+
+      /* Center lock icon */
+      .loader-emblem-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #2d2327;
+        opacity: 0;
+        animation: iconReveal 0.5s ease 0.4s forwards;
+      }
+
+      @keyframes iconReveal {
+        from { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+        to { opacity: 0.75; transform: translate(-50%, -50%) scale(1); }
+      }
+
+      /* Brand name with staggered letter reveal */
+      .loader-brand-text {
+        font-family: 'Playfair Display', serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #2d2327;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        animation: brandReveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+      }
+
+      .loader-brand-text .gold {
+        color: #c09a8a;
+        display: inline-block;
+      }
+
+      @keyframes brandReveal {
+        from { opacity: 0; transform: translateY(12px); letter-spacing: 0.15em; }
+        to { opacity: 1; transform: translateY(0); letter-spacing: 0.04em; }
+      }
+
+      /* Tagline */
+      .loader-tagline {
+        font-family: 'Inter', sans-serif;
+        font-size: 11px;
+        color: rgba(45, 35, 39, 0.35);
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        margin-top: 8px;
+        opacity: 0;
+        animation: fadeInUp 0.5s ease 0.6s forwards;
+      }
+
+      /* Loading progress bar */
+      .loader-progress-track {
+        width: 120px;
+        height: 2px;
+        background: rgba(192, 154, 138, 0.15);
+        border-radius: 2px;
+        margin-top: 24px;
+        overflow: hidden;
+        opacity: 0;
+        animation: fadeInUp 0.4s ease 0.7s forwards;
+      }
+
+      .loader-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #c09a8a, #d6b8a8);
+        border-radius: 2px;
+        animation: progressFill 1.8s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
+      }
+
+      @keyframes progressFill {
+        0% { width: 0%; }
+        30% { width: 40%; }
+        60% { width: 70%; }
+        100% { width: 100%; }
+      }
+
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+  
+  <body>
+    <!-- Premium Vault Loading Overlay -->
+    <div id="loader-overlay">
+      <div class="loader-particles">
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+        <div class="loader-particle"></div>
+      </div>
+      <div class="loader-emblem">
+        <div class="loader-emblem-ring"></div>
+        <div class="loader-emblem-inner"></div>
+        <div class="loader-emblem-glow"></div>
+        <div class="loader-emblem-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="loader-brand-text">Wisdom <span class="gold">Vault</span></div>
+      <div class="loader-tagline">Timeless Wisdom</div>
+      <div class="loader-progress-track">
+        <div class="loader-progress-fill"></div>
+      </div>
+    </div>
+
+    <slot />
+
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-banner">
+      <div class="pwa-banner__inner">
+        <div class="pwa-banner__icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="pwa-banner__text">
+          <span class="pwa-banner__title">Install Wisdom Vault</span>
+          <span class="pwa-banner__subtitle">Add to home screen for the best experience</span>
+        </div>
+        <button id="pwa-install-btn" class="pwa-banner__install">Install</button>
+        <button id="pwa-install-dismiss" class="pwa-banner__dismiss" aria-label="Dismiss">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <style>
+      .pwa-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
+        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+        background: rgba(18, 18, 18, 0.95);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+        pointer-events: none;
+      }
+
+      .pwa-banner.show {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .pwa-banner__inner {
+        max-width: 600px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .pwa-banner__icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(255, 180, 0, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #FFB400;
+      }
+
+      .pwa-banner__text {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .pwa-banner__title {
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .pwa-banner__subtitle {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.5);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .pwa-banner__install {
+        flex-shrink: 0;
+        padding: 8px 20px;
+        border-radius: 20px;
+        background: #FFB400;
+        color: #121212;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .pwa-banner__install:hover {
+        background: #e6a200;
+      }
+
+      .pwa-banner__dismiss {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.4);
+        transition: color 0.2s;
+      }
+
+      .pwa-banner__dismiss:hover {
+        color: #fff;
+      }
+
+      @media (max-width: 420px) {
+        .pwa-banner__subtitle {
+          display: none;
+        }
+      }
+    </style>
+  </body>
+</html>
+
+<script>
+  // ====== POLISHED PAGE TRANSITION ======
+  const loader = document.getElementById('loader-overlay');
+
+  function showLoader() {
+    loader.classList.remove('hiding');
+    loader.classList.add('active');
+    document.body.style.opacity = '0';
+  }
+
+  function hideLoader() {
+    loader.classList.add('hiding');
+    document.body.style.transition = 'opacity 0.4s ease';
+    document.body.style.opacity = '1';
+    setTimeout(() => {
+      loader.classList.remove('active', 'hiding');
+    }, 400);
+  }
+
+  // 1. Handle internal link clicks (Navigation)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    
+    if (link && link.href && link.href.startsWith(window.location.origin) && !link.target && !e.ctrlKey && !e.metaKey) {
+      if (link.href === window.location.href) return;
+
+      e.preventDefault();
+      const destination = link.href;
+
+      showLoader();
+
+      // Wait for the loader animation to be visible, then navigate
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 800);
+    }
+  });
+
+  // 2. Handle Form Redirects (Login / Register success)
+  window.redirectWithTransition = function(url) {
+    showLoader();
+    setTimeout(() => {
+      window.location.href = url;
+    }, 800);
+  };
+
+  // 3. Handle Page Load (Fade in and remove spinner)
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      hideLoader();
+    }, 600);
+  });
+
+  // 4. Backup: Listen for the 'pageshow' event (works for back/forward browser buttons)
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+      hideLoader();
+    }
+  });
+
+  // 5. Register Service Worker for PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+
+  // 6. PWA Install Banner
+  (function() {
+    let deferredPrompt = null;
+    const banner = document.getElementById('pwa-install-banner');
+    const dismissBtn = document.getElementById('pwa-install-dismiss');
+    const installBtn = document.getElementById('pwa-install-btn');
+
+    if (!banner || !dismissBtn || !installBtn) return;
+
+    // Don't show if already dismissed or already installed
+    if (localStorage.getItem('pwa-install-dismissed') === '1') return;
+    if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      banner.classList.add('show');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      banner.classList.remove('show');
+      if (outcome === 'accepted') {
+        localStorage.setItem('pwa-install-dismissed', '1');
+      }
+    });
+
+    dismissBtn.addEventListener('click', () => {
+      localStorage.setItem('pwa-install-dismissed', '1');
+      banner.classList.remove('show');
+    });
+
+    // Hide after 10 seconds if not interacted
+    setTimeout(() => {
+      if (banner.classList.contains('show')) {
+        banner.classList.remove('show');
+      }
+    }, 10000);
+  })();
+</script>

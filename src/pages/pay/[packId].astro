@@ -1,0 +1,271 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Get packId from URL
+const packId = Astro.params.packId || '';
+---
+
+<BaseLayout>
+  <div id="pay-app"></div>
+</BaseLayout>
+
+<style is:global>
+  #pay-app {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #05050A;
+    min-height: 100vh;
+    color: #E8E8F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #pay-app * { margin:0; padding:0; box-sizing:border-box; }
+
+  .pay-card {
+    background: #0F0F1E;
+    border: 1px solid #1C1C35;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 480px;
+    animation: fadeUp 0.4s ease-out;
+  }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  .pay-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .pay-title span {
+    background: linear-gradient(135deg, #C9A84C, #E0C86E);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .pay-subtitle {
+    font-size: 13px;
+    color: #6A6A8A;
+    margin-bottom: 28px;
+  }
+  .pay-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pay-form label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #6A6A8A;
+  }
+  .pay-form input, .pay-form select {
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #1C1C35;
+    border-radius: 8px;
+    color: #E8E8F5;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pay-form input:focus, .pay-form select:focus {
+    border-color: #C9A84C;
+  }
+  .pay-form input::placeholder { color: #4a4a60; }
+  .pay-btn {
+    margin-top: 8px;
+    padding: 14px 0;
+    background: linear-gradient(135deg, #C9A84C, #E0C86E);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .pay-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(201,168,76,0.3); }
+  .pay-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .pay-msg {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+  .pay-msg--show { display: block; }
+  .pay-msg--success { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); color: #10B981; }
+  .pay-msg--error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #EF4444; }
+  .pay-msg--info { background: rgba(201,168,76,0.08); border: 1px solid rgba(201,168,76,0.2); color: #C9A84C; }
+  .pay-back {
+    display: inline-block;
+    margin-bottom: 20px;
+    font-size: 12px;
+    color: #6A6A8A;
+    text-decoration: none;
+  }
+  .pay-back:hover { color: #C9A84C; }
+  .pay-price {
+    font-size: 28px;
+    font-weight: 800;
+    color: #C9A84C;
+    margin-bottom: 4px;
+  }
+  .pay-instructions {
+    font-size: 12px;
+    color: #6A6A8A;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    padding: 14px;
+    background: rgba(201,168,76,0.04);
+    border-radius: 8px;
+    border-left: 3px solid #C9A84C;
+  }
+</style>
+
+<script>
+  const app = document.getElementById('pay-app');
+  const packId = '<?= packId ?>';
+  const userData = localStorage.getItem('wisdom_vault_user');
+
+  if (!userData) {
+    app.innerHTML = `
+      <div class="pay-card" style="text-align:center;">
+        <div class="pay-title">Login Required</div>
+        <p style="color:#6A6A8A;margin:16px 0;">Please sign in to submit payment proof.</p>
+        <a href="/login" class="pay-btn" style="display:inline-block;text-decoration:none;padding:12px 32px;">Sign In</a>
+      </div>
+    `;
+  } else {
+    const user = JSON.parse(userData);
+    
+    // Fetch pack details
+    fetch('/api/premium/packs?userId=' + user.id)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          const pack = data.packs.find(function(p) { return p.id === packId; });
+          if (pack) {
+            renderForm(user, pack);
+          } else {
+            app.innerHTML = '<div class="pay-card" style="text-align:center;"><p style="color:#EF4444;">Pack not found.</p><a href="/dashboard" class="pay-back">← Back to Dashboard</a></div>';
+          }
+        }
+      })
+      .catch(function() {
+        app.innerHTML = '<div class="pay-card" style="text-align:center;"><p style="color:#EF4444;">Failed to load pack.</p></div>';
+      });
+  }
+
+  function renderForm(user, pack) {
+    app.innerHTML = `
+      <div class="pay-card">
+        <a href="/dashboard" class="pay-back">← Back to Dashboard</a>
+        <div class="pay-title">Payment <span>Proof</span></div>
+        <div class="pay-price">${parseFloat(pack.price).toLocaleString()}</div>
+        <div class="pay-subtitle">${pack.name}</div>
+
+        <div class="pay-instructions">
+          <strong>Instructions:</strong><br/>
+          1. Send <strong>${parseFloat(pack.price).toLocaleString()}</strong> to the provided payment number.<br/>
+          2. Fill in the form below with your payment details.<br/>
+          3. Admin will verify and unlock your pack within 24 hours.
+        </div>
+
+        <form class="pay-form" id="pay-form" onsubmit="submitProof(event)">
+          <div>
+            <label>Payment Provider</label>
+            <select id="provider" required>
+              <option value="">Select provider</option>
+              <option value="Airtel Money">Airtel Money</option>
+              <option value="Mpamba">Mpamba</option>
+              <option value="National Bank">National Bank</option>
+              <option value="Standard Bank">Standard Bank</option>
+              <option value="FDH Bank">FDH Bank</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label>Your Phone Number</label>
+            <input type="text" id="phone" placeholder="088XXXXXXX" required />
+          </div>
+          <div>
+            <label>Your Full Name (as on payment)</label>
+            <input type="text" id="customer-name" placeholder="Name used for payment" required />
+          </div>
+          <div>
+            <label>Card/Account Name</label>
+            <input type="text" id="card-name" placeholder="Name on your account/card" />
+          </div>
+          <div>
+            <label>Amount Sent</label>
+            <input type="number" id="amount-sent" placeholder="${parseFloat(pack.price).toLocaleString()}" value="${parseFloat(pack.price)}" required />
+          </div>
+          <button type="submit" class="pay-btn" id="submit-btn">Submit Payment Proof</button>
+        </form>
+        <div id="pay-msg" class="pay-msg"></div>
+      </div>
+    `;
+  }
+
+  window.submitProof = async function(e) {
+    e.preventDefault();
+    
+    const user = JSON.parse(localStorage.getItem('wisdom_vault_user') || '{}');
+    const provider = document.getElementById('provider').value;
+    const phone = document.getElementById('phone').value.trim();
+    const cardName = document.getElementById('card-name').value.trim();
+    const amountSent = document.getElementById('amount-sent').value;
+    const msg = document.getElementById('pay-msg');
+    const btn = document.getElementById('submit-btn');
+
+    if (!provider || !phone || !amountSent) {
+      msg.className = 'pay-msg pay-msg--error pay-msg--show';
+      msg.textContent = 'Please fill in all required fields.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    msg.className = 'pay-msg';
+
+    try {
+      const res = await fetch('/api/premium/payment-proof', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          packId: '<?= packId ?>',
+          providerName: provider,
+          phoneNumber: phone,
+          cardName: cardName,
+          customerName: document.getElementById('customer-name').value.trim(),
+          amountSent: amountSent
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        msg.className = 'pay-msg pay-msg--success pay-msg--show';
+        msg.textContent = data.message;
+        btn.style.display = 'none';
+        setTimeout(function() { window.location.href = '/dashboard'; }, 3000);
+      } else {
+        msg.className = 'pay-msg pay-msg--error pay-msg--show';
+        msg.textContent = data.message || 'Submission failed.';
+        btn.disabled = false;
+        btn.textContent = 'Submit Payment Proof';
+      }
+    } catch(err) {
+      msg.className = 'pay-msg pay-msg--error pay-msg--show';
+      msg.textContent = 'Network error. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'Submit Payment Proof';
+    }
+  };
+</script>

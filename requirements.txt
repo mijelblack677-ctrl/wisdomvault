@@ -1,0 +1,12 @@
+# Python 3 dependencies for the admin/ops tools in this repo.
+# Install with:  pip install -r requirements.txt
+#
+# These are the only third-party packages the Python scripts import;
+# everything else they use (os, sys, re, json, urllib, datetime, etc.)
+# is part of the Python standard library.
+#
+# Versions below are pinned to what has been verified working.
+
+psycopg2-binary==2.9.12   # PostgreSQL driver (provides the `psycopg2` module the DB tools import)
+tabulate==0.9.0           # Pretty-printed tables in admin/report output
+bcrypt==5.0.0             # Password hashing in resetpass.py / admin user management

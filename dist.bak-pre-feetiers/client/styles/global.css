@@ -1,0 +1,24 @@
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0D0D0D;
+  --text: #FFFFFF;
+  --muted: #888888;
+  --accent: #F5A623;
+  --accent-dim: rgba(245, 166, 35, 0.15);
+  --slash: #555555;
+  --card-bg: #141414;
+  --card-border: #2A2A2A;
+  --badge-bg: rgba(30, 30, 30, 0.95);
+  --badge-border: #333333;
+  --badge-text: #CCCCCC;
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-brand: 'Playfair Display', serif;
+}
+html { scroll-behavior: smooth; }
+body { background-color: var(--bg); color: var(--text); font-family: var(--font-body); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+.container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 60px; }
+@media (max-width: 768px) { .container { padding: 0 24px; } }
+@media (max-width: 480px) { .container { padding: 0 16px; } }
+.section { padding: 120px 0; position: relative; z-index: 10; }
+@media (max-width: 768px) { .section { padding: 80px 0; } }

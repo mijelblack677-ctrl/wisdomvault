@@ -1,0 +1,337 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="login-page">
+    <!-- 1. TOP HERO -->
+    <section class="hero">
+      <div class="hero__left">
+        <div class="hero__icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#c09a8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <h1 class="hero__heading">
+          <span class="hero__line hero__line--dark">Learn</span>
+          <span class="hero__line hero__line--dark">Grow</span>
+          <span class="hero__line hero__line--accent">Achieve</span>
+        </h1>
+        <p class="hero__subtitle">Your journey to a better<br/>you starts here.</p>
+      </div>
+
+      <div class="hero__right">
+        <svg class="hero__scene" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="140" cy="180" r="120" stroke="rgba(192,154,138,0.12)" stroke-width="2" fill="none"/>
+          <circle cx="140" cy="180" r="90" stroke="rgba(192,154,138,0.06)" stroke-width="1.5" fill="none"/>
+          <rect x="20" y="180" width="170" height="4" rx="2" fill="rgba(45,35,39,0.08)"/>
+          <line x1="165" y1="100" x2="165" y2="180" stroke="rgba(45,35,39,0.12)" stroke-width="2"/>
+          <ellipse cx="165" cy="98" rx="18" ry="10" fill="rgba(192,154,138,0.15)"/>
+          <ellipse cx="165" cy="98" rx="12" ry="6" fill="rgba(192,154,138,0.25)"/>
+          <circle cx="165" cy="105" r="40" fill="rgba(192,154,138,0.04)"/>
+          <rect x="30" y="155" width="70" height="45" rx="3" fill="rgba(45,35,39,0.06)" stroke="rgba(45,35,39,0.08)" stroke-width="1"/>
+          <rect x="34" y="159" width="62" height="30" rx="1" fill="rgba(192,154,138,0.04)"/>
+          <rect x="25" y="200" width="80" height="3" rx="1.5" fill="rgba(45,35,39,0.06)"/>
+          <rect x="110" y="148" width="40" height="10" rx="2" fill="rgba(45,35,39,0.1)" stroke="rgba(45,35,39,0.06)" stroke-width="0.5"/>
+          <rect x="112" y="149" width="36" height="1" fill="rgba(192,154,138,0.3)"/>
+          <rect x="108" y="158" width="44" height="10" rx="2" fill="rgba(45,35,39,0.08)" stroke="rgba(45,35,39,0.06)" stroke-width="0.5"/>
+          <rect x="110" y="159" width="40" height="1" fill="rgba(192,154,138,0.2)"/>
+          <rect x="112" y="168" width="40" height="10" rx="2" fill="rgba(45,35,39,0.06)" stroke="rgba(45,35,39,0.06)" stroke-width="0.5"/>
+          <rect x="114" y="169" width="36" height="1" fill="rgba(192,154,138,0.25)"/>
+          <rect x="155" y="168" width="14" height="14" rx="2" fill="rgba(45,35,39,0.08)"/>
+          <path d="M162 168 C162 155 150 152 155 145" stroke="rgba(90,130,90,0.35)" stroke-width="1.5" fill="none"/>
+          <path d="M162 168 C162 158 172 150 168 142" stroke="rgba(90,130,90,0.28)" stroke-width="1.5" fill="none"/>
+          <path d="M162 168 C160 160 168 155 162 148" stroke="rgba(90,140,90,0.22)" stroke-width="1" fill="none"/>
+          <circle cx="153" cy="144" r="4" fill="rgba(90,130,90,0.18)"/>
+          <circle cx="169" cy="141" r="3.5" fill="rgba(90,130,90,0.14)"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 2. LOGIN CARD -->
+    <section class="card">
+      <h2 class="card__title"><span class="card__title--dark">Welcome</span> <span class="card__title--accent">Back</span></h2>
+      <p class="card__subtitle">Sign in to continue your learning journey</p>
+
+      <form id="login-form" class="card__form">
+        <div class="field">
+          <label class="field__label">Email or Phone</label>
+          <div class="field__input">
+            <svg class="field__icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a7a72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            <input type="text" id="login-identifier" class="field__control" placeholder="Enter your email or phone" required autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field__label">Password</label>
+          <div class="field__input">
+            <input type="password" id="login-password" class="field__control field__control--pw" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" id="togglePassword" class="field__toggle" aria-label="Toggle password">
+              <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a7a72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8a7a72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="field__forgot">
+          <a href="#" class="field__forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-signin" id="login-submit">
+          <span>Sign In</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+
+        <div id="login-message" class="card__message" style="display:none;"></div>
+      </form>
+
+      <div class="divider">
+        <span class="divider__line"></span>
+        <span class="divider__text">OR</span>
+        <span class="divider__line"></span>
+      </div>
+
+      <button type="button" class="btn-google">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <p class="card__register">New here? <a href="/register" class="card__register-link">Create an account</a></p>
+    </section>
+
+    <footer class="footer">
+      <span>BETTER LEARNERS &nbsp;&bull;&nbsp; BRIGHTER FUTURES</span>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .login-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: #f7f1ec;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .login-page::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('/images/warm-books.jpg') center/cover no-repeat;
+    filter: blur(6px) brightness(0.35);
+    z-index: 0;
+  }
+
+  .login-page::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(247,241,236,0.75) 0%, rgba(237,228,221,0.65) 50%, rgba(247,241,236,0.75) 100%);
+    z-index: 0;
+  }
+
+  .login-page > * { position: relative; z-index: 1; }
+
+  .hero {
+    width: 100%;
+    max-width: 390px;
+    min-height: 42vh;
+    padding: 70px 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .hero__left { flex: 1; z-index: 1; }
+  .hero__icon { margin-bottom: 20px; }
+  .hero__heading { display: flex; flex-direction: column; line-height: 0.95; margin-bottom: 14px; }
+  .hero__line { font-size: 44px; font-weight: 900; letter-spacing: -0.02em; }
+  .hero__line--dark { color: #2d2327; }
+  .hero__line--accent { color: #c09a8a; }
+  .hero__subtitle { font-size: 17px; color: #5a4a4a; line-height: 1.5; }
+  .hero__right { width: 120px; flex-shrink: 0; margin-top: 10px; opacity: 0.9; }
+  .hero__scene { width: 100%; height: auto; }
+
+  .card {
+    width: calc(100% - 40px);
+    max-width: 350px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 8px 32px rgba(45, 35, 39, 0.08);
+    backdrop-filter: blur(20px);
+    margin-top: auto;
+  }
+
+  .card__title { font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+  .card__title--dark { color: #2d2327; }
+  .card__title--accent { color: #c09a8a; }
+  .card__subtitle { font-size: 13px; color: #5a4a4a; margin-bottom: 24px; }
+
+  .field { margin-bottom: 10px; }
+  .field__label { display: block; font-size: 10px; font-weight: 600; color: #8a7a72; margin-bottom: 6px; letter-spacing: 0.02em; }
+  .field__input { position: relative; display: flex; align-items: center; }
+  .field__icon { position: absolute; left: 12px; pointer-events: none; }
+  .field__control {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px 0 38px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(45, 35, 39, 0.08);
+    border-radius: 7px;
+    font-size: 14px;
+    color: #2d2327;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s;
+  }
+  .field__control::placeholder { color: #b0a098; }
+  .field__control:focus { border-color: #c09a8a; }
+  .field__control--pw { padding-left: 12px; padding-right: 40px; }
+  .field__toggle { position: absolute; right: 10px; background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  .field__forgot { text-align: right; margin-top: 6px; margin-bottom: 16px; }
+  .field__forgot-link { font-size: 12px; color: #c09a8a; text-decoration: none; font-weight: 500; }
+
+  .btn-signin {
+    width: 100%;
+    height: 42px;
+    background: linear-gradient(135deg, #d6b8a8, #c09a8a);
+    border: none;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 16px rgba(192, 154, 138, 0.25);
+  }
+  .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(192, 154, 138, 0.35); }
+  .btn-signin:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .card__message { margin-top: 10px; padding: 10px 12px; border-radius: 8px; font-size: 12px; text-align: center; }
+  .card__message--success { background: rgba(76,175,80,0.1); color: #2e7d32; }
+  .card__message--error { background: rgba(239,68,68,0.1); color: #c62828; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 14px 0; }
+  .divider__line { flex: 1; height: 1px; background: rgba(45, 35, 39, 0.1); }
+  .divider__text { font-size: 9px; color: #8a7a72; letter-spacing: 0.1em; font-weight: 600; }
+
+  .btn-google {
+    width: 100%;
+    height: 42px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(45, 35, 39, 0.12);
+    border-radius: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #2d2327;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-google:hover { background: rgba(255, 255, 255, 1); border-color: rgba(45, 35, 39, 0.2); }
+
+  .card__register { text-align: center; margin-top: 16px; font-size: 11px; color: #8a7a72; }
+  .card__register-link { color: #c09a8a; text-decoration: none; font-weight: 600; }
+
+  .footer { padding: 24px; text-align: center; }
+  .footer span { font-size: 8px; font-weight: 600; color: #b0a098; letter-spacing: 3px; text-transform: uppercase; }
+
+  @media (min-width: 768px) {
+    .login-page { justify-content: center; }
+    .hero { min-height: auto; padding: 60px 24px 30px; }
+    .card { margin-top: 0; }
+  }
+</style>
+
+<script>
+  const pw = document.getElementById('login-password') as HTMLInputElement;
+  const toggle = document.getElementById('togglePassword');
+  toggle?.addEventListener('click', () => {
+    const vis = pw.type === 'text';
+    pw.type = vis ? 'password' : 'text';
+    toggle.querySelector('.eye-open').style.display = vis ? 'block' : 'none';
+    toggle.querySelector('.eye-closed').style.display = vis ? 'none' : 'block';
+  });
+
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const btn = document.getElementById('login-submit') as HTMLButtonElement;
+  const msg = document.getElementById('login-message');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.style.display = 'none';
+    const id = (document.getElementById('login-identifier') as HTMLInputElement)?.value.trim();
+    const password = (document.getElementById('login-password') as HTMLInputElement)?.value;
+    if (!id || !password) {
+      msg.textContent = 'Please fill in all fields';
+      msg.className = 'card__message card__message--error';
+      msg.style.display = 'block';
+      return;
+    }
+    btn.disabled = true;
+    btn.querySelector('span').textContent = 'Signing in...';
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: id, password }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        msg.textContent = `Welcome back, ${data.user.fullName || 'User'}!`;
+        msg.className = 'card__message card__message--success';
+        msg.style.display = 'block';
+        localStorage.setItem('wisdom_vault_user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('wisdom_vault_session', data.token);
+        }
+        setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+      } else {
+        msg.textContent = data.message || 'Invalid credentials.';
+        msg.className = 'card__message card__message--error';
+        msg.style.display = 'block';
+      }
+    } catch {
+      msg.textContent = 'Network error.';
+      msg.className = 'card__message card__message--error';
+      msg.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'Sign In';
+    }
+  });
+</script>

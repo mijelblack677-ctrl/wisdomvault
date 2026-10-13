@@ -1,0 +1,102 @@
+/* Wisdom Vault - Vibrant Gold Glow Effects */
+/* Like the screenshot: MWK 176,300.00 with neon gold glow */
+
+:root {
+  --gold-neon: #F5A623;
+  --gold-glow-soft: 0 0 20px rgba(245, 166, 35, 0.15);
+  --gold-glow-medium: 0 0 30px rgba(245, 166, 35, 0.25);
+  --gold-glow-strong: 0 0 40px rgba(245, 166, 35, 0.35);
+  --gold-glow-intense: 0 0 60px rgba(245, 166, 35, 0.45), 0 0 100px rgba(245, 166, 35, 0.15);
+}
+
+/* Gold text with glow - like the screenshot */
+.gold-glow {
+  color: #F5A623;
+  text-shadow: 
+    0 0 10px rgba(245, 166, 35, 0.15),
+    0 0 20px rgba(245, 166, 35, 0.1),
+    0 0 40px rgba(245, 166, 35, 0.05);
+}
+
+/* Intense glow for big numbers */
+.gold-glow-intense {
+  color: #F5A623;
+  text-shadow: 
+    0 0 15px rgba(245, 166, 35, 0.2),
+    0 0 30px rgba(245, 166, 35, 0.15),
+    0 0 60px rgba(245, 166, 35, 0.08),
+    0 0 100px rgba(245, 166, 35, 0.04);
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+/* Pulse animation for vibrating gold effect */
+@keyframes goldPulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 15px rgba(245, 166, 35, 0.2),
+      0 0 30px rgba(245, 166, 35, 0.12),
+      0 0 60px rgba(245, 166, 35, 0.06);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(245, 166, 35, 0.3),
+      0 0 40px rgba(245, 166, 35, 0.2),
+      0 0 80px rgba(245, 166, 35, 0.1),
+      0 0 120px rgba(245, 166, 35, 0.05);
+  }
+}
+
+/* Gold border glow */
+.gold-border-glow {
+  border-color: rgba(245, 166, 35, 0.3);
+  box-shadow: 0 0 20px rgba(245, 166, 35, 0.05);
+}
+
+.gold-border-glow:hover {
+  border-color: rgba(245, 166, 35, 0.6);
+  box-shadow: 0 0 40px rgba(245, 166, 35, 0.12);
+}
+
+/* Gold button with glow */
+.btn-gold-glow {
+  background: #F5A623;
+  color: #0D0D0D;
+  box-shadow: 0 0 20px rgba(245, 166, 35, 0.2);
+  transition: all 0.3s ease;
+}
+
+.btn-gold-glow:hover {
+  box-shadow: 0 0 40px rgba(245, 166, 35, 0.35), 0 0 80px rgba(245, 166, 35, 0.15);
+  transform: scale(1.02);
+}
+
+/* Vibrant gold card on hover */
+.card-gold-glow {
+  transition: all 0.4s ease;
+}
+
+.card-gold-glow:hover {
+  border-color: rgba(245, 166, 35, 0.3);
+  box-shadow: 0 0 30px rgba(245, 166, 35, 0.06);
+}
+
+/* Glowing gold badge */
+.badge-gold-glow {
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  color: #F5A623;
+  box-shadow: 0 0 15px rgba(245, 166, 35, 0.05);
+}
+
+/* Application to hero balance */
+.hero-amount-glow {
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #F5A623;
+  text-shadow: 
+    0 0 20px rgba(245, 166, 35, 0.15),
+    0 0 40px rgba(245, 166, 35, 0.08),
+    0 0 80px rgba(245, 166, 35, 0.04);
+  animation: goldPulse 3s ease-in-out infinite;
+}

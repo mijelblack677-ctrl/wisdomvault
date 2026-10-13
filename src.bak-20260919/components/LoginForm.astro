@@ -1,0 +1,299 @@
+---
+---
+<div class="login-form-wrapper" id="login">
+  <div class="container">
+    <div class="login-form-card">
+      <h2 class="login-form__title">Welcome <span class="text-accent">Back</span></h2>
+      <p class="login-form__subtitle">Sign in to access your Vault.</p>
+
+      <form id="login-form" class="login-form">
+        <!-- Email -->
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email Address</label>
+          <input type="email" id="login-email" name="email" class="form-input" placeholder="Enter your email" required />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <input type="password" id="login-password" name="password" class="form-input" placeholder="Enter your password" required />
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="form-submit" id="login-submit">
+          <span class="form-submit__text">Sign In</span>
+          <span class="form-submit__loader" style="display:none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spinner">
+              <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+              <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+
+        <!-- Message Area -->
+        <div id="login-message" class="form-message" style="display:none;"></div>
+      </form>
+
+      <p class="login-form__register-link">
+        Don't have an account? <a href="#register" class="login-form__register-link-a">Create one</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .login-form-wrapper {
+    background: #0B0B0B;
+    position: relative;
+    z-index: 10;
+    padding: 120px 0;
+  }
+
+  .login-form-card {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid rgba(245, 166, 35, 0.2);
+    border-radius: 12px;
+    padding: 48px 40px;
+  }
+
+  .login-form__title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(28px, 3.5vw, 40px);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .login-form__subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(14px, 0.9vw, 16px);
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .form-input {
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.1);
+  }
+
+  .form-input::placeholder {
+    color: #555;
+  }
+
+  .form-submit {
+    margin-top: 8px;
+    padding: 14px 0;
+    background: var(--accent);
+    color: #0B0B0B;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .form-submit:hover {
+    background: #d4b35a;
+    box-shadow: 0 8px 30px rgba(245, 166, 35, 0.35);
+    transform: translateY(-1px);
+  }
+
+  .form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .spinner {
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .form-message {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .form-message--success {
+    background: rgba(76, 175, 80, 0.1);
+    border: 1px solid rgba(76, 175, 80, 0.3);
+    color: #4CAF50;
+  }
+
+  .form-message--error {
+    background: rgba(229, 57, 53, 0.1);
+    border: 1px solid rgba(229, 57, 53, 0.3);
+    color: #e53935;
+  }
+
+  .login-form__register-link {
+    text-align: center;
+    margin-top: 24px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .login-form__register-link-a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .login-form__register-link-a:hover {
+    color: #d4b35a;
+  }
+
+  @media (max-width: 600px) {
+    .login-form-card {
+      padding: 32px 24px;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('login-form') as HTMLFormElement;
+  const submitBtn = document.getElementById('login-submit') as HTMLButtonElement;
+  const submitText = submitBtn.querySelector('.form-submit__text') as HTMLElement;
+  const submitLoader = submitBtn.querySelector('.form-submit__loader') as HTMLElement;
+  const messageDiv = document.getElementById('login-message') as HTMLDivElement;
+
+  function showMessage(text: string, type: 'success' | 'error') {
+    messageDiv.textContent = text;
+    messageDiv.className = `form-message form-message--${type}`;
+    messageDiv.style.display = 'block';
+  }
+
+  function hideMessage() {
+    messageDiv.style.display = 'none';
+  }
+
+  function setLoading(loading: boolean) {
+    submitBtn.disabled = loading;
+    submitText.style.display = loading ? 'none' : 'inline';
+    submitLoader.style.display = loading ? 'inline' : 'none';
+  }
+
+  let lockoutTimer: ReturnType<typeof setInterval> | null = null;
+
+  function startLockoutCountdown(seconds: number) {
+    setLoading(true); // keep button disabled
+    let remaining = seconds;
+    function tick() {
+      if (remaining <= 0) {
+        if (lockoutTimer) clearInterval(lockoutTimer);
+        lockoutTimer = null;
+        hideMessage();
+        setLoading(false);
+        return;
+      }
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      const display = m > 0
+        ? `${m}m ${s.toString().padStart(2, '0')}s`
+        : `${s}s`;
+      showMessage(`Account locked. Try again in ${display}.`, 'error');
+      remaining--;
+    }
+    tick(); // show immediately
+    lockoutTimer = setInterval(tick, 1000);
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideMessage();
+    if (lockoutTimer) { clearInterval(lockoutTimer); lockoutTimer = null; }
+
+    const email = (document.getElementById('login-email') as HTMLInputElement).value.trim();
+    const password = (document.getElementById('login-password') as HTMLInputElement).value;
+
+    if (!email || !password) {
+      showMessage('Please enter your email and password.', 'error');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        showMessage(`Welcome back, ${data.user.fullName}!`, 'success');
+        localStorage.setItem('wisdom_vault_user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('wisdom_vault_session', data.token);
+        }
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 1500);
+      } else if (data.locked && data.retryAfterSeconds) {
+        // Account locked — show a live countdown so the user knows when
+        // they can try again without having to guess.
+        startLockoutCountdown(data.retryAfterSeconds);
+      } else {
+        showMessage(data.message || 'Login failed. Please try again.', 'error');
+      }
+    } catch (err) {
+      showMessage('Network error. Please check your connection.', 'error');
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
