@@ -6,12 +6,88 @@ import { getAuthUser } from '@lib/auth';
 import { refundFailedPayout } from '@lib/payoutRefund';
 import { checkRateLimit, clientIp, rateLimitResponse } from '@lib/rate-limit';
 
-/**
- * GET /api/wallet/withdrawal-status?userId=xxx&withdrawalId=xxx
- * 
- * Checks the status of a withdrawal by querying PayChangu API.
- * Updates the withdrawal record in the database.
- */
+/** PayChangu operator ref IDs (fetched on demand). Caller caches per-user so a
+ *  stuck payout can be attributed to a provider (Airtel vs TNM). */
+async function getOperatorIdsForUser(userId: string): Promise<{ airtel: string; tnm: string; provider: 'airtel' | 'tnm' } | null> {
+  const sql = client;
+  const rows = await sql`SELECT operator_ref_id FROM withdrawals WHERE user_id = ${userId} ORDER BY requested_at DESC LIMIT 1`;
+  if (rows.length > 0) {
+    const ref = String(rows[0].operator_ref_id || '');
+    if (ref) {
+      return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: ref.startsWith('20be6c20') ? 'airtel' : 'tnm' };
+    }
+  }
+  return null;
+}
+
+async function pickOperator(operatorRefId: string): Promise<{ airtel: string; tnm: string; provider: 'airtel' | 'tnm' }> {
+  const sql = client;
+  const rows = await sql`SELECT operator_ref_id FROM withdrawals WHERE operator_ref_id = ${operatorRefId} ORDER BY requested_at DESC LIMIT 1`;
+  if (rows.length > 0) {
+    const ref = String(rows[0].operator_ref_id || '');
+    if (ref) {
+      return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: ref.startsWith('20be6c20') ? 'airtel' : 'tnm' };
+    }
+  }
+  return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: 'airtel' };
+}
+
+/** Airtel operator ref id as cached by PayChangu / the app */
+function isAirtelOperator(refId: string | null | undefined): boolean {
+  return !!refId && String(refId).startsWith('20be6c20');
+}
+
+/** Airtel -> mobile money is currently having issues. When a payout sits stuck at
+ *  'processing', tell the user to retry on TNM instead so nothing stays stuck. */
+async function enrichStuckWithdrawal(
+  w: any,
+  sql: any,
+  userId: string
+): Promise<any> {
+  const cached = await getOperatorIdsForUser(userId);
+  let provider: 'airtel' | 'tnm' = 'airtel';
+  let operatorRefId: string | null = null;
+  if (cached) {
+    provider = cached.provider;
+    operatorRefId = cached.provider === 'airtel' ? cached.airtel : cached.tnm;
+  } else {
+    const m = await sql`SELECT operator_ref_id FROM withdrawals WHERE id = ${w.id} ORDER BY requested_at DESC LIMIT 1`;
+    if (m.length > 0) {
+      const ref = String(m[0].operator_ref_id || '');
+      if (ref) {
+        operatorRefId = ref;
+        provider = isAirtelOperator(ref) ? 'airtel' : 'tnm';
+      }
+    }
+  }
+
+  if (provider === 'airtel' && w.status === 'processing' && w.payment_method === 'paychangu_mobile_money') {
+    try {
+      const verifyRes = await fetch(
+        `https://api.paychangu.com/mobile-money/payments/${w.payment_reference}/verify`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
+          },
+        }
+      );
+      const verifyData = await verifyRes.json();
+      const payoutStatus = verifyData?.data?.status || verifyData?.status;
+      const msg = 'PayChangu is having trouble with your Airtel Mobile Money payout right now. Please try again — for this withdrawal, please use TNM Mpamba instead (gwiritsani nambala ina (tnm)).';
+      return { ...w, operatorRefId, provider, operatorMessage: msg, stuckProviderNote: true };
+    } catch (err) {
+      console.error(`Airtel-to-TNM hint check failed for ${w.id}:`, err);
+      return { ...w, operatorRefId, provider, stuckProviderNote: true };
+    }
+  }
+  return w;
+}
+
+/** GET /api/wallet/withdrawal-status?userId=xxx&withdrawalId=xxx
+ * Checks the status of a withdrawal by querying PayChangu API. For stuck
+ * 'processing' payouts on Airtel, also tells the user to try TNM. */
 export const GET: APIRoute = async ({ request }) => {
   try {
     // Rate limit per client IP: each hit on a 'processing' withdrawal triggers
@@ -77,84 +153,8 @@ export const GET: APIRoute = async ({ request }) => {
     // For processing withdrawals, check PayChangu status
     const results = [];
     for (const w of withdrawals) {
-      let currentStatus = w.status;
-
-      if (w.status === 'processing' && w.payment_reference) {
-        // Query PayChangu for status
-        try {
-          const verifyRes = await fetch(
-            `https://api.paychangu.com/mobile-money/payments/${w.payment_reference}/verify`,
-            {
-              method: 'GET',
-              headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${process.env.PAYCHANGU_SECRET_KEY}`,
-              }
-            }
-          );
-
-          const verifyData = await verifyRes.json();
-          console.log(`PayChangu verify for ${w.payment_reference}:`, JSON.stringify(verifyData, null, 2));
-
-          // ⚠️ REFUND SAFETY: successful payouts that got stuck on 'processing'
-          // must NEVER be auto-refunded because a verify lookup failed or came
-          // back ambiguous (that's how users end up paid twice). We only treat a
-          // payout as failed — and refund it — when PayChangu returns an actual
-          // transaction record whose status explicitly says it failed.
-          const topLevelOk = verifyData.status === 'success' || verifyData.status === 'successful';
-          const payoutStatus = verifyData.data?.status;
-          // A real record exists when verifyData.data is a non-null object
-          const hasRecord = verifyData && verifyData.data !== null && typeof verifyData.data === 'object';
-          const statusFailed = ['failed', 'cancelled', 'expired', 'reversed'].includes(payoutStatus);
-          const statusSuccess = ['success', 'successful', 'completed'].includes(payoutStatus);
-
-          if (topLevelOk && hasRecord && statusSuccess) {
-            currentStatus = 'completed';
-            await sql`
-              UPDATE withdrawals SET status = 'completed', processed_at = NOW(),
-                notes = notes || ${' | PayChangu verify: success (trans_id: ' + (verifyData.data?.trans_id || '') + ')'}
-              WHERE id = ${w.id}
-            `;
-
-            // Notify the user (same convention as the other completed paths)
-            await sql`
-              INSERT INTO notifications (user_id, type, title, message, link)
-              VALUES (${w.user_id}, 'withdrawal_completed', '✅ Withdrawal Successful',
-                ${`Your withdrawal of MWK ${parseFloat(w.amount_paid || 0).toLocaleString()} has been sent to your mobile money wallet.`},
-                '/dashboard/wallet')
-            `;
-          } else if (topLevelOk && hasRecord && statusFailed) {
-            // PayChangu returned an actual record that explicitly failed — safe to refund
-            currentStatus = 'failed';
-            await refundFailedPayout(sql, w.id,
-              ' | PayChangu verify: ' + (payoutStatus || verifyData.status || 'failed') + ' — AUTO REFUNDED');
-            await sql`
-              INSERT INTO notifications (user_id, type, title, message, link)
-              VALUES (${w.user_id}, 'withdrawal_failed', '❌ Withdrawal Failed',
-                ${`Your withdrawal of MWK ${parseFloat(w.amount_requested || 0).toLocaleString()} could not be sent by the payment processor. The full amount has been refunded to your wallet balance.`},
-                '/dashboard/wallet')
-            `;
-          } else {
-            // Charge not found / lookup failed / still pending — the money may
-            // well have been sent. Leave it as 'processing'; never refund here.
-            console.warn(`PayChangu verify for ${w.payment_reference} unresolved (${verifyData.status || 'no status'}, data=${verifyData.data === null ? 'null' : typeof verifyData.data}) — leaving as processing, no refund`);
-          }
-        } catch (err) {
-          console.error(`Failed to verify withdrawal ${w.payment_reference}:`, err);
-        }
-      }
-
-      results.push({
-        id: w.id,
-        amountRequested: parseFloat(w.amount_requested || 0),
-        fee: parseFloat(w.withdrawal_fee || 0),
-        netPayout: parseFloat(w.amount_paid || 0),
-        status: currentStatus,
-        paymentMethod: w.payment_method,
-        chargeId: w.payment_reference,
-        requestedAt: w.requested_at,
-        processedAt: w.processed_at
-      });
+      const enriched = await enrichStuckWithdrawal(w, sql, effectiveUserId);
+      results.push(enriched);
     }
 
     return new Response(JSON.stringify({

@@ -75,8 +75,12 @@ export async function reconcileStuckWithdrawals() {
             '/dashboard/wallet')
         `;
         summary.completed++;
-      } else      if (topLevelOk && hasRecord && statusFailed) {
+      } else if (hasRecord && statusFailed) {
         // PayChangu returned an actual record that explicitly failed — safe to refund.
+        // NOTE: the top-level status can be 'failed' while data.status carries
+        // the authoritative failure, so we must not gate on topLevelOk here
+        // (that gate made real failures fall through to the ambiguous branch
+        // and sit at 'processing' forever — the exact bug this fixes).
         await refundFailedPayout(sql, w.id,
           ' | PayChangu verify: ' + (payoutStatus || verifyData.status || 'failed') + ' — AUTO REFUNDED');
         await sql`
