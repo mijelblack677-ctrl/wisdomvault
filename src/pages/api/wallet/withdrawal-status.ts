@@ -6,64 +6,34 @@ import { getAuthUser } from '@lib/auth';
 import { refundFailedPayout } from '@lib/payoutRefund';
 import { checkRateLimit, clientIp, rateLimitResponse } from '@lib/rate-limit';
 
-/** PayChangu operator ref IDs (fetched on demand). Caller caches per-user so a
- *  stuck payout can be attributed to a provider (Airtel vs TNM). */
-async function getOperatorIdsForUser(userId: string): Promise<{ airtel: string; tnm: string; provider: 'airtel' | 'tnm' } | null> {
-  const sql = client;
-  const rows = await sql`SELECT operator_ref_id FROM withdrawals WHERE user_id = ${userId} ORDER BY requested_at DESC LIMIT 1`;
-  if (rows.length > 0) {
-    const ref = String(rows[0].operator_ref_id || '');
-    if (ref) {
-      return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: ref.startsWith('20be6c20') ? 'airtel' : 'tnm' };
-    }
-  }
+/** Detect the mobile-money provider from the withdrawal's notes field.
+ *  withdraw.ts writes "… Provider: airtel|tnm …" into notes; the withdrawals
+ *  table has no operator_ref_id column, so we parse notes instead. Returns
+ *  null when the provider cannot be determined. Never throws. */
+function detectProviderFromNotes(notes: string | null | undefined): 'airtel' | 'tnm' | null {
+  if (!notes) return null;
+  const m = String(notes).match(/Provider:\s*(airtel|tnm)/i);
+  if (m) return m[1].toLowerCase() as 'airtel' | 'tnm';
+  // Fallback: raw mentions in free-text notes
+  if (/airtel/i.test(String(notes))) return 'airtel';
+  if (/tnm|mpamba/i.test(String(notes))) return 'tnm';
   return null;
-}
-
-async function pickOperator(operatorRefId: string): Promise<{ airtel: string; tnm: string; provider: 'airtel' | 'tnm' }> {
-  const sql = client;
-  const rows = await sql`SELECT operator_ref_id FROM withdrawals WHERE operator_ref_id = ${operatorRefId} ORDER BY requested_at DESC LIMIT 1`;
-  if (rows.length > 0) {
-    const ref = String(rows[0].operator_ref_id || '');
-    if (ref) {
-      return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: ref.startsWith('20be6c20') ? 'airtel' : 'tnm' };
-    }
-  }
-  return { airtel: '20be6c20-adeb-4b5b-a7ba-0769820df4fb', tnm: '27494cb5-ba9e-437f-a114-4e7a7686bcca', provider: 'airtel' };
-}
-
-/** Airtel operator ref id as cached by PayChangu / the app */
-function isAirtelOperator(refId: string | null | undefined): boolean {
-  return !!refId && String(refId).startsWith('20be6c20');
 }
 
 /** Airtel -> mobile money is currently having issues. When a payout sits stuck at
  *  'processing', tell the user to retry on TNM instead so nothing stays stuck. */
-async function enrichStuckWithdrawal(
-  w: any,
-  sql: any,
-  userId: string
-): Promise<any> {
-  const cached = await getOperatorIdsForUser(userId);
-  let provider: 'airtel' | 'tnm' = 'airtel';
-  let operatorRefId: string | null = null;
-  if (cached) {
-    provider = cached.provider;
-    operatorRefId = cached.provider === 'airtel' ? cached.airtel : cached.tnm;
-  } else {
-    const m = await sql`SELECT operator_ref_id FROM withdrawals WHERE id = ${w.id} ORDER BY requested_at DESC LIMIT 1`;
-    if (m.length > 0) {
-      const ref = String(m[0].operator_ref_id || '');
-      if (ref) {
-        operatorRefId = ref;
-        provider = isAirtelOperator(ref) ? 'airtel' : 'tnm';
-      }
-    }
+async function enrichStuckWithdrawal(w: any): Promise<any> {
+  // Only stuck paychangu mobile-money payouts need extra handling; everything
+  // else returns untouched (matches the pre-regression behaviour).
+  if (!(w.status === 'processing' && w.payment_method === 'paychangu_mobile_money')) {
+    return w;
   }
 
-  if (provider === 'airtel' && w.status === 'processing' && w.payment_method === 'paychangu_mobile_money') {
+  const provider = detectProviderFromNotes(w.notes);
+
+  if (provider === 'airtel') {
     try {
-      const verifyRes = await fetch(
+      await fetch(
         `https://api.paychangu.com/mobile-money/payments/${w.payment_reference}/verify`,
         {
           method: 'GET',
@@ -73,13 +43,11 @@ async function enrichStuckWithdrawal(
           },
         }
       );
-      const verifyData = await verifyRes.json();
-      const payoutStatus = verifyData?.data?.status || verifyData?.status;
       const msg = 'PayChangu is having trouble with your Airtel Mobile Money payout right now. Please try again — for this withdrawal, please use TNM Mpamba instead (gwiritsani nambala ina (tnm)).';
-      return { ...w, operatorRefId, provider, operatorMessage: msg, stuckProviderNote: true };
+      return { ...w, provider, operatorMessage: msg, stuckProviderNote: true };
     } catch (err) {
       console.error(`Airtel-to-TNM hint check failed for ${w.id}:`, err);
-      return { ...w, operatorRefId, provider, stuckProviderNote: true };
+      return { ...w, provider, stuckProviderNote: true };
     }
   }
   return w;
@@ -153,7 +121,7 @@ export const GET: APIRoute = async ({ request }) => {
     // For processing withdrawals, check PayChangu status
     const results = [];
     for (const w of withdrawals) {
-      const enriched = await enrichStuckWithdrawal(w, sql, effectiveUserId);
+      const enriched = await enrichStuckWithdrawal(w);
       results.push(enriched);
     }
 
